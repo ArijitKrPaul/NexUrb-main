@@ -1,0 +1,54 @@
+.inventory-container{
+    width: 80vw;
+    margin: 25px auto;
+    margin-bottom: 50px;
+    height: 90vh;
+}
+
+#ProjectNavbar{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: white;
+    color: black;
+    font-size: 25px;
+}
+#ProjectNavbar p{
+    margin: 0px
+}
+
+.Icon{
+    padding-top: 10px;
+    cursor: pointer;
+}
+
+#updateItem{
+    background-color: white;
+    width: 30vw;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 5px;
+}
+#DelItem{
+    background-color: white;
+    width: 30vw;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.inventory-form-button{
+    align-self: center;
+    color: black;
+}
+.inventory-form-button:hover{
+    background-color: black;
+    color: white;
+}
+.error{
+    background-color: red;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+
+}

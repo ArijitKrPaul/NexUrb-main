@@ -1,0 +1,76 @@
+html, body {
+    height: 100%;
+
+  }
+
+.search-area{
+    width: 30%;
+    display: flex;
+    justify-content: center;
+    margin: 15px auto;
+    gap: 20px;
+}
+
+
+#search-button{
+    background-color:white;
+    color: black;
+    margin-bottom: 20px;
+    width: 100px;
+}
+
+#search-button:hover{
+    background-color:black;
+    color: white;
+}
+
+.projectcontainer{
+    width: 100%;
+    background-color:#e0f2f7;
+    padding-top: 15px;
+    min-height: calc(100vh - 100px);
+    align-items: center;
+    text-align: center;
+   
+}
+.card-area{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;  
+    margin-bottom: 40px; 
+}
+
+#addButton{
+    color: black;
+    cursor: pointer;
+}
+
+#ProjectNavbar{
+    font-size: 35px;
+    min-height: 25px;
+    height: 55px;
+    background-color:white;
+    color: black;
+    display: flex;
+    justify-content: space-between;
+}
+.addForm {
+    display: flex;
+    flex-direction: column;
+    /* align-items: center;   */
+    justify-content: center; 
+    text-align: center; 
+    background-color: antiquewhite;
+    padding: 15px;
+    border-radius: 10px;
+  }
+.addFormButton {
+    margin-top: 16px;
+    align-self: center;
+}
+
+.xMark{
+    cursor: pointer;
+    align-self: flex-end;
+}

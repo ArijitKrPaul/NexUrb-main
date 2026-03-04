@@ -1,0 +1,26 @@
+h2{
+    background-color: white;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    text-align: left;
+    padding-left: 50px;
+    margin-bottom: 2px;
+    margin-top:0px;
+}
+
+#admin-container{
+    display: flex;
+    
+}
+
+#admin-tabs{
+    width: 15%;
+    background-color: white;
+    height:890px;
+}
+
+#admin-content{
+    width: 85%;
+    background-color: white;
+    margin-left: 2px;
+}

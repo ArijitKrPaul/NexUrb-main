@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+*{
+
+    box-sizing: border-box;
+    font-family: 'lato';
+}
+
+html, body {
+    height: 100%;
+    
+}
+
+.back-video{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.homeNavbar{
+    width: 95%;
+    margin: 0 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative; 
+    flex-wrap: wrap;
+    text-align: center;
+    height: 100px;
+}
+.icon{
+    height: 30px;
+}
+.icon .logo{
+    color: rgb(11, 174, 244);
+    font-size: 35px;
+    cursor: pointer;
+    height: 50px;
+    background-color:black;
+    padding: 0px;
+}
+
+.menu{
+    width: 400px;
+    float: left;
+    height: 70px;
+    padding: 0px 15px; 
+}
+
+#home-btn{
+  color: white;
+  font-size: 15px;
+  margin: 0 30px;
+}
+
+#home-btn:hover{
+  color: rgb(11, 174, 244);
+}
+#home-btn1{
+  color: white;
+  font-size: 15px;
+  margin: 0 30px;
+}
+
+#home-btn1:hover{
+  color: rgb(11, 174, 244);
+}
+/* Page content container */
+.page-container {
+  margin-top: 100px;
+  margin-left: 100px;              /* Push cards away from the left edge */
+  width: 200%;
+  max-width: 600px;               /* Adjusted to fit text well */
+}
+
+/* Main card wrapper holding both card items */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;                      /* Space between cards */
+}
+
+/* Individual card item */
+.card-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Text left, image right */
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 50px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.card-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  background-color: #fdfdfd;
+}
+
+/* Text block on the left */
+.card-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: 20px; /* spacing between text and image */
+}
+
+/* Title text */
+.card-title {
+  font-size: 1.2em;
+  font-weight: 600;
+  color: black;
+  margin-bottom: 20px;
+}
+
+/* Description text */
+.card-description {
+  font-size: 0.96em;
+  color: #555;
+}
+
+/* Image on the right */
+.card-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;            /* Makes it circular */
+  object-fit: contain;             /* Crop and fill */
+  border: 2px solid rgb(11, 174, 244);;
+}
+
+#homeFooter {
+    background-color: black;
+    color: rgb(11, 174, 244);
+    text-align: center;
+    padding: 5px 0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+#homeFooter p {
+    margin: 0;
+    font-size: 14px;
+}

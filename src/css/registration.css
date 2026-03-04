@@ -1,0 +1,153 @@
+/* --- Global Wrapper --- */
+.reg-wrapper {
+  width: 100%;
+  max-width: 1000px; /* Changed from fixed width to max-width for better responsiveness */
+  min-height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
+  margin: 0 auto; /* Centers the wrapper horizontally */
+}
+
+/* --- Main Card --- */
+.reg-card {
+  background-color: #fffafb;
+  width: 100%;
+  min-width: 320px; /* Adjusted to prevent breaking on small mobile screens */
+  border-radius: 30px;
+  display: flex;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  flex-direction: row;
+}
+
+/* --- Left Side (Image Area) --- */
+.reg-left {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.reg-logo {
+  position: absolute !important; 
+  top: 40px;
+  left: 40px;
+  font-weight: bold !important;
+  font-family: serif !important;
+  color: black;
+}
+
+.reg-img {
+  width: 100%;
+  max-width: 300px;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+/* --- Right Side (Form Area) --- */
+.reg-right {
+  flex: 1.2;
+  padding: 48px; /* Approx 6 * 8px */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.reg-header {
+  font-weight: bold !important;
+  margin-bottom: 32px !important;
+  font-family: serif !important;
+  color: #000;
+}
+
+.reg-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* --- TextField Customization --- */
+/* Target the Label */
+.reg-input .MuiInputLabel-root {
+  color: #555 !important;
+}
+
+/* Target the Underline before focus */
+.reg-input .MuiInput-underline:before {
+  border-bottom-color: #dcdcdc !important;
+}
+
+/* --- Buttons --- */
+.reg-btn-primary {
+  margin-top: 16px !important;
+  background-color: #7f346b !important;
+  color: #fff !important;
+  border-radius: 25px !important;
+  padding: 10px !important;
+  text-transform: none !important;
+  font-size: 1rem !important;
+  box-shadow: none !important;
+}
+
+.reg-btn-primary:hover {
+  background-color: #581c44 !important;
+}
+
+.reg-btn-google {
+  margin-top: 16px !important;
+  border-radius: 25px !important;
+  padding: 10px !important;
+  text-transform: none !important;
+  font-size: 1rem !important;
+  border-color: #e0e0e0 !important;
+  color: #333 !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.reg-btn-google:hover {
+  background-color: #f9f9f9 !important;
+  border-color: #ccc !important;
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* --- Footer Links --- */
+.reg-login-text {
+  margin-top: 24px !important;
+  text-align: center;
+  color: #333;
+}
+
+.reg-link {
+  color: #db4a85 !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+}
+
+.reg-link:hover {
+  text-decoration: underline !important;
+}
+
+/* --- Media Queries (Responsiveness) --- */
+@media (max-width: 900px) {
+  .reg-card {
+    flex-direction: column;
+    min-width: 100%; /* Allow card to shrink on tablets/mobile */
+  }
+
+  .reg-left {
+    display: none; /* Hides image section on mobile as per original logic */
+  }
+
+  .reg-right {
+    padding: 24px;
+  }
+}

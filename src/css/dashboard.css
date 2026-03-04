@@ -1,0 +1,55 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Momo+Trust+Display&family=Varela&display=swap');
+
+
+#dashboard{
+    margin: 0;
+    text-align: center;
+    align-items: center;
+    max-width: 100%;
+}
+#dashboard-container{
+    width: 1200px;
+    margin: 50px auto;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: white;
+    color: #000000;
+    height: 720px;
+    text-align: center;
+    font-family: 'Varela', sans-serif;
+    
+}
+#dashboard-form{
+    padding: 10px;
+    color: black;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    font-family: 'Varela', sans-serif;
+    height: 400px;
+}
+
+.card{
+    padding:0px;
+    margin-top: 50px;
+    height: 450px;
+    transition: transform 0.3s ease;
+    border-radius: 10px;
+    object-fit: contain;
+    box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
+}
+
+.text-content{
+    font-family: "Momo Trust Display", sans-serif;
+    font-size: 35px;
+}
+
+.card:hover{
+    transform: translateY(-10px);
+    cursor: pointer;
+}
+
+#user-icon:hover{
+    cursor: pointer;
+}
+ */
