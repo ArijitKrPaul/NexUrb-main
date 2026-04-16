@@ -13,6 +13,7 @@ import EmployeeInventoryComponent from "./components/empInventory.jsx";
 import DeptReg from "./components/DeptReg.jsx";
 import DeptAdmin from "./components/DeptAdmin.jsx";
 import EmployeeProjectComponent from "./components/empProject.jsx";
+import ComplaintComponent from "./components/ComplaintForm.jsx";
 
 function App() {
   const router = createBrowserRouter([
@@ -71,6 +72,10 @@ function App() {
     {
       path: "/admin/project",
       element: <ProjectComponent />,
+    },
+    {
+      path: "/home/complaint",
+      element: <ComplaintComponent />,
     },
   ]);
 

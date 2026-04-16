@@ -8,7 +8,17 @@ import {
   faTrash,
   faCircleXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { Stack, Backdrop, Typography, Button, Toolbar } from "@mui/material";
+import {
+  Stack,
+  Backdrop,
+  Typography,
+  Button,
+  Toolbar,
+  FormControl,
+  Select,
+  MenuItem,
+  InputLabel,
+} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import axios from "axios";
 
@@ -25,6 +35,7 @@ export default function InventoryComponent() {
   const [rows, setRows] = React.useState([]);
   const [rowId, setRowId] = React.useState();
   const [count, setCount] = React.useState(0);
+  const [unit, setUnit] = React.useState("");
 
   const handleOpen = (e) => {
     setOpen(true);
@@ -57,6 +68,7 @@ export default function InventoryComponent() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(unit);
     try {
       const user = localStorage.getItem("user");
       const dept_id = JSON.parse(user).dept_id;
@@ -65,6 +77,7 @@ export default function InventoryComponent() {
         name: name,
         quantity: amount,
         price: price,
+        unit: unit,
       });
       console.log(q);
     } catch (error) {
@@ -172,6 +185,15 @@ export default function InventoryComponent() {
       field: "price",
       headerName: "Price",
       type: "number",
+      width: 150,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "unit",
+      headerName: "Unit",
+      type: "text",
       width: 150,
       editable: true,
       align: "center",
@@ -330,6 +352,20 @@ export default function InventoryComponent() {
             required
             onChange={(e) => setPrice(e.target.value)}
           />
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Choose Unit</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={unit}
+              label="Choose Unit"
+              onChange={(e) => setUnit(e.target.value)}
+            >
+              <MenuItem value={"per kg"}>Per Kg</MenuItem>
+              <MenuItem value={"per ton"}>Per Ton</MenuItem>
+              <MenuItem value={"per quintol"}>Per Quintal</MenuItem>
+            </Select>
+          </FormControl>
           <Button className="inventory-form-button" onClick={handleSubmit}>
             Submit
           </Button>

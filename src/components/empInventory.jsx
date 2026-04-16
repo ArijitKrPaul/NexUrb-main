@@ -59,6 +59,15 @@ export default function EmployeeInventoryComponent() {
       headerAlign: "center",
     },
     {
+      field: "unit",
+      headerName: "Unit",
+      type: "text",
+      width: 150,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
       field: "price",
       headerName: "Price",
       type: "number",

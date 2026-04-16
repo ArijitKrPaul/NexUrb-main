@@ -21,6 +21,10 @@ const DashboardCard = () => {
     navigate("/home/register");
   };
 
+  const complain = () => {
+    navigate("/home/complaint");
+  };
+
   return (
     <div className="grid grid-cols-2 gap-6 py-10 auto-rows-fr">
       <div className="bg-white w-full rounded-2xl p-5 hover:shadow-xl ">
@@ -66,7 +70,10 @@ const DashboardCard = () => {
           Directly report infrastructure issues or service disruptionsto the
           relevant organization with photo evidence.
         </p>
-        <button className="uppercase active:scale-95 mt-7.5 p-2.5 bg-orange-50 rounded">
+        <button
+          className="uppercase active:scale-95 mt-7.5 p-2.5 bg-orange-50 rounded"
+          onClick={complain}
+        >
           file complaint
         </button>
       </div>
