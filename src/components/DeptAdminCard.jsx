@@ -14,8 +14,8 @@ const DeptAdminCard = () => {
   const project = () => {
     navigate("/admin/project");
   };
-  const complaints = () => {
-    navigate("/admin/complaints");
+  const addUsers = () => {
+    navigate("/admin/addUsers");
   };
 
   const inventory = () => {
@@ -49,7 +49,7 @@ const DeptAdminCard = () => {
         </p>
         <button
           className="uppercase active:scale-95 mt-7.5 p-2.5 bg-green-50 rounded "
-          onClick={complaints}
+          onClick={addUsers}
         >
           MANAGE USERS{" "}
         </button>

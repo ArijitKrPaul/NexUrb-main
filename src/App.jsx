@@ -14,6 +14,7 @@ import DeptReg from "./components/DeptReg.jsx";
 import DeptAdmin from "./components/DeptAdmin.jsx";
 import EmployeeProjectComponent from "./components/empProject.jsx";
 import ComplaintComponent from "./components/ComplaintForm.jsx";
+import UsersComponent from "./components/AddUsers.jsx";
 
 function App() {
   const router = createBrowserRouter([
@@ -56,6 +57,10 @@ function App() {
     {
       path: "/admin/inventory",
       element: <InventoryComponent />,
+    },
+    {
+      path: "/admin/addUsers",
+      element: <UsersComponent />,
     },
     {
       path: "/Edashboard",
