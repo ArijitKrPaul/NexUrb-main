@@ -15,6 +15,7 @@ import DeptAdmin from "./components/DeptAdmin.jsx";
 import EmployeeProjectComponent from "./components/empProject.jsx";
 import ComplaintComponent from "./components/ComplaintForm.jsx";
 import UsersComponent from "./components/AddUsers.jsx";
+import AddUSerComponent from "./components/addNewUser.jsx";
 
 function App() {
   const router = createBrowserRouter([
@@ -36,7 +37,7 @@ function App() {
     },
     {
       path: "/home/project",
-      element: <EmployeeProjectComponent />,
+      element: <ProjectComponent />,
     },
     {
       path: "/home/contacts",
@@ -48,11 +49,11 @@ function App() {
     },
     {
       path: "/Edashboard/empinventory",
-      element: <EmployeeInventoryComponent />,
+      element: <InventoryComponent />,
     },
     {
       path: "/Edashboard/empProject",
-      element: <EmployeeProjectComponent />,
+      element: <ProjectComponent />,
     },
     {
       path: "/admin/inventory",
@@ -61,6 +62,10 @@ function App() {
     {
       path: "/admin/addUsers",
       element: <UsersComponent />,
+    },
+    {
+      path: "/admin/addUsers/add",
+      element: <AddUSerComponent />,
     },
     {
       path: "/Edashboard",

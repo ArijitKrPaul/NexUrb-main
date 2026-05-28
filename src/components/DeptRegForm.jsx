@@ -23,11 +23,16 @@ const DeptRegForm = () => {
       });
       setError(false);
       navigate("/home");
+      alert("Form Submitted");
       console.log(q.data);
     } catch (err) {
       setError(err.data);
       console.log(err);
     }
+  };
+
+  const handleCancel = () => {
+    navigate("/home");
   };
 
   return (
@@ -104,7 +109,10 @@ const DeptRegForm = () => {
           </div>
         </div>
         <div className="bg-[#f8f9fa] h-[15%] flex py-7.5 gap-2.5 justify-end px-5 border-t border-gray-300">
-          <button className="w-1/6 hover:bg-gray-200 active:scale-90 rounded-xl">
+          <button
+            className="w-1/6 hover:bg-gray-200 active:scale-90 rounded-xl"
+            onClick={handleCancel}
+          >
             Cancel
           </button>
           <button

@@ -42,13 +42,17 @@ export default function LoginComponent() {
     localStorage.clear();
     localStorage.setItem("user", JSON.stringify(data));
 
-    if (data.role == "user") {
+    if (data.role === "user") {
       navigate("/home");
     }
-    if (data.role == "superadmin") {
+    if (data.role === "superadmin") {
       navigate("/Superadmin");
     }
-    if (data.role === "employee") {
+    if (
+      data.role === "Employee" ||
+      data.role === "Project Manager" ||
+      data.role === "Inventory Manager"
+    ) {
       navigate("/Edashboard");
     }
     if (data.role === "admin") {

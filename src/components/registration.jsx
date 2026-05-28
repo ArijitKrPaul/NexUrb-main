@@ -36,6 +36,7 @@ const Registration = () => {
       console.log(res);
     } catch (err) {
       setError(err.res.data);
+      alert(error);
     }
   };
 

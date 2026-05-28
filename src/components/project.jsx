@@ -114,7 +114,12 @@ export default function ProjectComponent() {
     setOpen(false);
   };
   const handleOpen = () => {
-    setOpen(true);
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user.role == "Projcet Manager") {
+      setOpen(true);
+    } else {
+      alert("Not sufficient permission");
+    }
   };
   return (
     <div>

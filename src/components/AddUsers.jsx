@@ -4,9 +4,36 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Box, TextField } from "@mui/material";
 import { MagnifyingGlassIcon, TrashIcon } from "@phosphor-icons/react";
-
+import { useNavigate } from "react-router-dom";
+import ExistingUserCard from "./existingUserCard";
+import axios from "axios";
 export default function UsersComponent() {
   const [members, setMembers] = React.useState(0);
+  const [users, setUsers] = React.useState([]);
+  const navigate = useNavigate();
+
+  React.useEffect(function () {
+    const fetchData = async () => {
+      const user = JSON.parse(localStorage.getItem("user"));
+      const dept_id = user.dept_id;
+      try {
+        const q = await axios.get(`http://localhost:5000/deptUsers`, {
+          params: {
+            dept_id: dept_id,
+          },
+        });
+        setUsers(q.data);
+        setMembers(users.length);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  });
+  const addUsers = () => {
+    console.log("hello");
+    navigate("/admin/addUsers/add");
+  };
 
   return (
     <div className="min-h-screen bg-[#f8f9fa]">
@@ -14,7 +41,10 @@ export default function UsersComponent() {
       <div className="bg-white flex p-3 justify-between items-center px-10 shadow-sm">
         <p className="font-bold text-2xl">NexUrb</p>
 
-        <button className="bg-blue-500 px-4 py-2 rounded-xl text-white hover:cursor-pointer">
+        <button
+          className="bg-blue-500 px-4 py-2 rounded-xl text-white hover:cursor-pointer"
+          onClick={addUsers}
+        >
           Add Users
         </button>
       </div>
@@ -46,11 +76,9 @@ export default function UsersComponent() {
         </div>
       </div>
       <div className=" max-w-4xl mx-auto my-2.5 h-[65vh] bg-white p-2.5 flex-col flex-nowrap overflow-y-auto">
-        <div className="flex h-15 bg-[#f8f9fa] rounded-2xl justify-between items-center p-5">
-          <p className="font-bold text-xl">Arijit kumar Paul</p>
-          <p className="font-bold text-xl mr-20">arijitkmrpl46@gmail.com</p>
-          <TrashIcon size={24} weight="thin" />
-        </div>
+        {users.map((elem) => {
+          return <ExistingUserCard props={elem} />;
+        })}
       </div>
     </div>
   );

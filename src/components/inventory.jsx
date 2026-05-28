@@ -38,8 +38,13 @@ export default function InventoryComponent() {
   const [unit, setUnit] = React.useState("");
 
   const handleOpen = (e) => {
-    setOpen(true);
-    setRowId(e);
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user.role == "Inventory Manager") {
+      setOpen(true);
+      setRowId(e);
+    } else {
+      alert("Not Sufficient Permission to Update Items");
+    }
   };
 
   React.useEffect(
@@ -110,10 +115,15 @@ export default function InventoryComponent() {
   };
 
   const handleAdd = () => {
-    setOpen1(true);
-    setName("");
-    setAmount(0);
-    setPrice(0);
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user.role == "Inventory Manager") {
+      setOpen1(true);
+      setName("");
+      setAmount(0);
+      setPrice(0);
+    } else {
+      alert("Not Sufficient Permission");
+    }
   };
 
   const handleClose = () => {
@@ -125,11 +135,16 @@ export default function InventoryComponent() {
   };
 
   const handleDelete = (e) => {
-    console.log(e);
-    setOpen2(true);
-    setRowId(e);
-    errorp.classList.remove("error");
-    errorp.innerText = "";
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user.role == "Inventory Manager") {
+      console.log(e);
+      setOpen2(true);
+      setRowId(e);
+      errorp.classList.remove("error");
+      errorp.innerText = "";
+    } else {
+      alert("Not Sufficient Permission to delete");
+    }
   };
 
   const handleDelSubmit = async () => {
