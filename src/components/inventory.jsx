@@ -18,6 +18,7 @@ import {
   Select,
   MenuItem,
   InputLabel,
+  Alert,
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import axios from "axios";
@@ -36,6 +37,9 @@ export default function InventoryComponent() {
   const [rowId, setRowId] = React.useState();
   const [count, setCount] = React.useState(0);
   const [unit, setUnit] = React.useState("");
+  const [addPermission, setAddPermission] = React.useState(false);
+  const [updatePermission, setUpdatePermission] = React.useState(false);
+  const [deletePermission, setDeletePermission] = React.useState(false);
 
   const handleOpen = (e) => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -43,7 +47,10 @@ export default function InventoryComponent() {
       setOpen(true);
       setRowId(e);
     } else {
-      alert("Not Sufficient Permission to Update Items");
+      setUpdatePermission(true);
+      setTimeout(() => {
+        setUpdatePermission(false);
+      }, 2000);
     }
   };
 
@@ -122,7 +129,10 @@ export default function InventoryComponent() {
       setAmount(0);
       setPrice(0);
     } else {
-      alert("Not Sufficient Permission");
+      setAddPermission(true);
+      setTimeout(() => {
+        setAddPermission(false);
+      }, 2000);
     }
   };
 
@@ -143,7 +153,10 @@ export default function InventoryComponent() {
       errorp.classList.remove("error");
       errorp.innerText = "";
     } else {
-      alert("Not Sufficient Permission to delete");
+      setDeletePermission(true);
+      setTimeout(() => {
+        setDeletePermission(false);
+      }, 2000);
     }
   };
 
@@ -258,6 +271,23 @@ export default function InventoryComponent() {
           onClick={handleAdd}
         />
       </Toolbar>
+      <div className="flex justify-center mt-2.5">
+        {addPermission && (
+          <Alert severity="warning">
+            Not sufficient Permission to add items
+          </Alert>
+        )}
+        {updatePermission && (
+          <Alert severity="warning">
+            Not sufficient Permission to update items
+          </Alert>
+        )}
+        {deletePermission && (
+          <Alert severity="warning">
+            Not sufficient Permission to delete itmes
+          </Alert>
+        )}
+      </div>
       <div className="inventory-container">
         <DataGrid
           id="inventory-table"

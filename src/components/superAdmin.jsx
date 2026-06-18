@@ -8,6 +8,16 @@ import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import AdminCard from "./AdminCard";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import {
+  Button,
+  ClickAwayListener,
+  Grow,
+  MenuItem,
+  MenuList,
+  Paper,
+  Popper,
+} from "@mui/material";
 
 const columns = [
   { field: "displayId", headerName: "ID", width: 90 },
@@ -93,6 +103,12 @@ export default function AdminComponent() {
   const [value, setValue] = React.useState(0);
   const [count, setCount] = React.useState(0);
   const [dept, setDept] = React.useState([]);
+  const [open, setOpen] = React.useState(false);
+  const anchorRef = React.useRef(null);
+  const navigate = useNavigate();
+  const handleToggle = () => {
+    setOpen((prevOpen) => !prevOpen);
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -133,7 +149,7 @@ export default function AdminComponent() {
     [count],
   );
 
-  const handleAccept = async (id, name, state, city, location) => {
+  const handleAccept = async (id, name, state, city, location, user_id) => {
     console.log(id);
     try {
       await axios.delete(`http://localhost:5000/deptRegister/${id}`);
@@ -143,6 +159,10 @@ export default function AdminComponent() {
         city: city,
         location: location,
         id: id,
+      });
+      await axios.put("http://localhost:5000/addDeptId", {
+        id: id,
+        user_id: user_id,
       });
       setCount(count + 1);
     } catch (err) {
@@ -160,9 +180,78 @@ export default function AdminComponent() {
     }
   };
 
+  const handleClose = (event) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+      return;
+    }
+    localStorage.removeItem("user");
+    navigate("/login");
+    setOpen(false);
+  };
+
+  function handleListKeyDown(event) {
+    if (event.key === "Tab") {
+      event.preventDefault();
+      setOpen(false);
+    } else if (event.key === "Escape") {
+      setOpen(false);
+    }
+  }
+
+  function handleClickAway() {
+    setOpen(false);
+  }
+
   return (
     <div>
-      <h2 className="text-2xl font-bold">Admin</h2>
+      <div className="flex justify-between">
+        <h2 className="text-2xl font-bold w-[50%]">Admin</h2>
+        <div className="bg-white mb-0.5 py-2.5 w-[50%] flex justify-end pr-25">
+          <Button
+            ref={anchorRef}
+            id="composition-button"
+            aria-controls={open ? "composition-menu" : undefined}
+            aria-expanded={open}
+            aria-haspopup="true"
+            onClick={handleToggle}
+            className="text-black"
+          >
+            Dashboard
+          </Button>
+          <Popper
+            open={open}
+            anchorEl={anchorRef.current}
+            role={undefined}
+            placement="bottom-start"
+            transition
+            disablePortal
+          >
+            {({ TransitionProps, placement }) => (
+              <Grow
+                {...TransitionProps}
+                style={{
+                  transformOrigin:
+                    placement === "bottom-start" ? "left top" : "left bottom",
+                }}
+              >
+                <Paper>
+                  <ClickAwayListener onClickAway={handleClickAway}>
+                    <MenuList
+                      autoFocusItem={open}
+                      id="composition-menu"
+                      aria-labelledby="composition-button"
+                      onKeyDown={handleListKeyDown}
+                    >
+                      <MenuItem onClick={handleClose}>Logout</MenuItem>
+                    </MenuList>
+                  </ClickAwayListener>
+                </Paper>
+              </Grow>
+            )}
+          </Popper>
+        </div>
+      </div>
+
       <Box id="admin-container">
         <Box id="admin-tabs">
           {" "}

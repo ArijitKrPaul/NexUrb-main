@@ -12,6 +12,7 @@ import {
   Stack,
   Box,
   Toolbar,
+  Alert,
 } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -41,6 +42,7 @@ export default function ProjectComponent() {
   const [date, setDate] = React.useState(null);
   const [name, setName] = React.useState("");
   const [dataArr, setDataArr] = React.useState([]);
+  const [permission, setPermission] = React.useState(false);
 
   const statesWithCities = {
     "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Nellore"],
@@ -115,10 +117,14 @@ export default function ProjectComponent() {
   };
   const handleOpen = () => {
     const user = JSON.parse(localStorage.getItem("user"));
-    if (user.role == "Projcet Manager") {
+    console.log(user.role);
+    if (user.role === "Project Manager") {
       setOpen(true);
     } else {
-      alert("Not sufficient permission");
+      setPermission(true);
+      setTimeout(() => {
+        setPermission(false);
+      }, 2000);
     }
   };
   return (
@@ -133,6 +139,12 @@ export default function ProjectComponent() {
           onClick={handleOpen}
         />
       </Toolbar>
+      <div className="flex justify-center mt-2.5">
+        {permission && (
+          <Alert severity="warning">Not Suitable Permission</Alert>
+        )}
+      </div>
+
       <div class="projectcontainer">
         <div class="search-area">
           <FormControl fullWidth variant="filled">

@@ -16,6 +16,7 @@ import EmployeeProjectComponent from "./components/empProject.jsx";
 import ComplaintComponent from "./components/ComplaintForm.jsx";
 import UsersComponent from "./components/AddUsers.jsx";
 import AddUSerComponent from "./components/addNewUser.jsx";
+import ProtectedRoute from "./components/protectedRoute.jsx";
 
 function App() {
   const router = createBrowserRouter([
@@ -29,7 +30,11 @@ function App() {
     },
     {
       path: "/home",
-      element: <DashboardComponent />,
+      element: (
+        <ProtectedRoute>
+          <DashboardComponent />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/register",
@@ -37,55 +42,107 @@ function App() {
     },
     {
       path: "/home/project",
-      element: <ProjectComponent />,
+      element: (
+        <ProtectedRoute>
+          <ProjectComponent />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/home/contacts",
-      element: <DepartmentsPage />,
+      element: (
+        <ProtectedRoute>
+          <DepartmentsPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/Superadmin",
-      element: <AdminComponent />,
+      element: (
+        <ProtectedRoute>
+          <AdminComponent />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/Edashboard/empinventory",
-      element: <InventoryComponent />,
+      element: (
+        <ProtectedRoute>
+          <InventoryComponent />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/Edashboard/empProject",
-      element: <ProjectComponent />,
+      element: (
+        <ProtectedRoute>
+          <ProjectComponent />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/admin/inventory",
-      element: <InventoryComponent />,
+      element: (
+        <ProtectedRoute>
+          <InventoryComponent />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/admin/addUsers",
-      element: <UsersComponent />,
+      element: (
+        <ProtectedRoute>
+          <UsersComponent />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/admin/addUsers/add",
-      element: <AddUSerComponent />,
+      element: (
+        <ProtectedRoute>
+          <AddUSerComponent />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/Edashboard",
-      element: <EmployeeDashboardComponent />,
+      element: (
+        <ProtectedRoute>
+          <EmployeeDashboardComponent />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/home/register",
-      element: <DeptReg />,
+      element: (
+        <ProtectedRoute>
+          <DeptReg />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/admin",
-      element: <DeptAdmin />,
+      element: (
+        <ProtectedRoute>
+          <DeptAdmin />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/admin/project",
-      element: <ProjectComponent />,
+      element: (
+        <ProtectedRoute>
+          <ProjectComponent />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/home/complaint",
-      element: <ComplaintComponent />,
+      element: (
+        <ProtectedRoute>
+          <ComplaintComponent />
+        </ProtectedRoute>
+      ),
     },
   ]);
 

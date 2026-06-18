@@ -10,29 +10,38 @@ import axios from "axios";
 export default function UsersComponent() {
   const [members, setMembers] = React.useState(0);
   const [users, setUsers] = React.useState([]);
+  const [count, setCount] = React.useState(0);
+
   const navigate = useNavigate();
 
-  React.useEffect(function () {
-    const fetchData = async () => {
-      const user = JSON.parse(localStorage.getItem("user"));
-      const dept_id = user.dept_id;
-      try {
-        const q = await axios.get(`http://localhost:5000/deptUsers`, {
-          params: {
-            dept_id: dept_id,
-          },
-        });
-        setUsers(q.data);
-        setMembers(users.length);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  });
+  React.useEffect(
+    function () {
+      const fetchData = async () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const dept_id = user.dept_id;
+        try {
+          const q = await axios.get(`http://localhost:5000/deptUsers`, {
+            params: {
+              dept_id: dept_id,
+            },
+          });
+          setUsers(q.data);
+          setMembers(users.length);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchData();
+    },
+    [count, users.length],
+  );
   const addUsers = () => {
     console.log("hello");
     navigate("/admin/addUsers/add");
+  };
+
+  const onDelete = () => {
+    setCount(count + 1);
   };
 
   return (
@@ -77,7 +86,7 @@ export default function UsersComponent() {
       </div>
       <div className=" max-w-4xl mx-auto my-2.5 h-[65vh] bg-white p-2.5 flex-col flex-nowrap overflow-y-auto">
         {users.map((elem) => {
-          return <ExistingUserCard props={elem} />;
+          return <ExistingUserCard user={elem} del={onDelete} />;
         })}
       </div>
     </div>

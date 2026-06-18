@@ -31,6 +31,7 @@ const AdminCard = (props) => {
               props.e.state,
               props.e.city,
               props.e.location,
+              props.e.user_id,
             )
           }
         >

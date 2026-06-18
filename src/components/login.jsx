@@ -55,7 +55,7 @@ export default function LoginComponent() {
     ) {
       navigate("/Edashboard");
     }
-    if (data.role === "admin") {
+    if (data.role === "admin" || data.role === "Admin") {
       navigate("/admin");
     }
   };
