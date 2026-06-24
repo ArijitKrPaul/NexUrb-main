@@ -8,7 +8,7 @@ const ProjectCard = (props) => {
       <h1 className="text-black font-bold text-4xl mb-2">{props.data.Name}</h1>
       <p className="font-bold mb-2.5">{props.data.type}</p>
       <p className="text-2xl mb-2">Undertaken by:{props.data.dept_name}</p>
-      <p className="flex px-5 text-xl">Date:26/07/26</p>
+      <p className="flex px-5 text-xl">Date:{Date.now()}</p>
       <p className="text mt-2 mb-4.5">{props.data.description}</p>
       <div className="flex justify-between px-5">
         <p className="text-xl">State:{props.data.state}</p>

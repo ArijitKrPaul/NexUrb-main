@@ -17,6 +17,7 @@ import ComplaintComponent from "./components/ComplaintForm.jsx";
 import UsersComponent from "./components/AddUsers.jsx";
 import AddUSerComponent from "./components/addNewUser.jsx";
 import ProtectedRoute from "./components/protectedRoute.jsx";
+import SupportPageComponenet from "./components/SupportPage.jsx";
 
 function App() {
   const router = createBrowserRouter([
@@ -141,6 +142,22 @@ function App() {
       element: (
         <ProtectedRoute>
           <ComplaintComponent />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/Edashboard/support",
+      element: (
+        <ProtectedRoute>
+          <SupportPageComponenet />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/admin/contacts",
+      element: (
+        <ProtectedRoute>
+          <DepartmentsPage />
         </ProtectedRoute>
       ),
     },

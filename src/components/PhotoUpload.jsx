@@ -22,6 +22,7 @@ export default function PhotoUpload() {
           type="file"
           accept="image/*"
           id="upload-photo"
+          name="image"
           style={{ display: "none" }}
           onChange={handleChange}
         />

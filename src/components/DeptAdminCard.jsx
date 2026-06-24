@@ -6,6 +6,8 @@ import {
   CameraPlusIcon,
   ClipboardTextIcon,
   DotsNineIcon,
+  PersonIcon,
+  PhoneCallIcon,
 } from "@phosphor-icons/react";
 
 const DeptAdminCard = () => {
@@ -20,6 +22,10 @@ const DeptAdminCard = () => {
 
   const inventory = () => {
     navigate("/admin/inventory");
+  };
+
+  const contacts = () => {
+    navigate("/admin/contacts");
   };
   return (
     <div className="grid grid-cols-2 gap-6 py-10 auto-rows-fr">
@@ -56,15 +62,18 @@ const DeptAdminCard = () => {
       </div>
       <div className="bg-white  w-full rounded-2xl p-5 hover:shadow-xl">
         <div className="bg-orange-50 p-1.5 w-15 flex justify-center rounded h-20 items-center mb-5">
-          <CameraPlusIcon size={44} color="#d86e18" />
+          <PhoneCallIcon size={44} color="#d86e18" />
         </div>
-        <p className="font-extrabold text-2xl text-left">LODGE COMPLAINT</p>
+        <p className="font-extrabold text-2xl text-left">CONTACT</p>
         <p className="mt-3.5 font-light text-left text-xl">
-          Directly report infrastructure issues or service disruptionsto the
-          relevant organization with photo evidence.
+          Add Department contact details that can be used by other departments
+          or common people to contact you.
         </p>
-        <button className="uppercase active:scale-95 mt-7.5 p-2.5 bg-orange-50 rounded">
-          file complaint
+        <button
+          className="uppercase active:scale-95 mt-7.5 p-2.5 bg-orange-50 rounded"
+          onClick={contacts}
+        >
+          add contact
         </button>
       </div>
       <div className="bg-black text-white  w-full rounded-2xl p-5 flex flex-col justify-center hover:shadow-xl/30">
@@ -81,7 +90,7 @@ const DeptAdminCard = () => {
              rounded"
           onClick={inventory}
         >
-          Manage Assets
+          See Assets
         </button>
       </div>
     </div>
