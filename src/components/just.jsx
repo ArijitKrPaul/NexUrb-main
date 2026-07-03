@@ -478,8 +478,6 @@ export default function InventoryComponent() {
           backgroundColor: "#FFFFFF",
           border: "1px solid #E4DFEE",
           boxShadow: "0 10px 30px -18px rgba(33,28,43,0.25)",
-          display: "flex",
-          justifyContent: "center",
         }}
       >
         <DataGrid

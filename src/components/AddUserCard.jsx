@@ -1,20 +1,22 @@
-import { InputLabel, MenuItem, Select } from "@mui/material";
 import { PlusCircleIcon } from "@phosphor-icons/react";
 import React from "react";
 
-const AddNewUserToDepartmentCard = (props) => {
+const AddNewUserToDepartmentCard = ({ props, onAdd }) => {
   return (
-    <div className="columns-3 gap-5 h-15 bg-[#f8f9fab6] rounded-2xl justify-between items-center p-2.5 mb-3">
-      <p className="font-bold text-xl">{props.props.name}</p>
-
-      <p className="font-bold text-xl mr-20">{props.props.email}</p>
-
-      <PlusCircleIcon
-        size={30}
-        weight="thin"
-        className="ml-20 pt-1.5 cursor-pointer"
-        onClick={() => props.onAdd(props.props.user_id)}
-      />
+    <div className="grid grid-cols-[1fr_1fr_80px] gap-4 items-center px-6 py-3 border-b border-[#F1EEF8] last:border-b-0 hover:bg-[#F8F6FC] transition">
+      <p className="text-sm font-medium text-[#211C2B] truncate">
+        {props.name}
+      </p>
+      <p className="text-sm text-[#7A7188] truncate">{props.email}</p>
+      <div className="flex justify-end">
+        <button
+          onClick={() => onAdd(props.user_id)}
+          className="text-[#6b46a6] hover:text-[#5a3a8c] transition"
+          aria-label={`Add ${props.name} to department`}
+        >
+          <PlusCircleIcon size={26} weight="thin" />
+        </button>
+      </div>
     </div>
   );
 };

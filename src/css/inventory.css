@@ -1,8 +1,10 @@
-.inventory-container{
-    width: 80vw;
-    margin: 25px auto;
-    margin-bottom: 50px;
+.inventory-container {
+    width: 95vw;
+    margin: 25px auto 50px auto;
     height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 #ProjectNavbar{

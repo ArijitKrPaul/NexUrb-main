@@ -1,5 +1,5 @@
 import { Alert, Backdrop, Box, MenuItem, Select } from "@mui/material";
-import { TrashIcon } from "@phosphor-icons/react";
+import { TrashIcon, PencilSimpleIcon } from "@phosphor-icons/react";
 import axios from "axios";
 import React from "react";
 
@@ -9,48 +9,37 @@ function ExistingUserCard(props) {
   const [role, setRole] = React.useState("");
   const [error, setError] = React.useState(false);
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleClose1 = () => {
-    setOpen1(false);
-  };
+  const handleClose = () => setOpen(false);
+  const handleClose1 = () => setOpen1(false);
   const handleOpen = () => {
+    setRole("");
     setOpen(true);
   };
+  const handleOpen1 = () => setOpen1(true);
 
-  const handleOpen1 = () => {
-    setOpen1(true);
-  };
   const handleRoleChange = async () => {
-    if (role === props.user.role) {
+    if (!role || role === props.user.role) {
       setError(true);
-      setTimeout(() => {
-        setError(false);
-      }, 2000);
-    } else {
-      try {
-        const q = await axios.put("http://localhost:5000/updateRole", {
-          user_id: props.user.user_id,
-          role: role,
-        });
-        console.log(q.data);
-        setOpen(false);
-        props.del();
-      } catch (error) {
-        console.log(error);
-      }
+      setTimeout(() => setError(false), 2000);
+      return;
+    }
+    try {
+      await axios.put("http://localhost:5000/updateRole", {
+        user_id: props.user.user_id,
+        role: role,
+      });
+      setOpen(false);
+      props.del();
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const handleDelete = async () => {
-    console.log(props.user.user_id);
     try {
-      const q = await axios.put("http://localhost:5000/delUser", {
+      await axios.put("http://localhost:5000/delUser", {
         user_id: props.user.user_id,
       });
-      console.log(q.data);
       setOpen1(false);
       props.del();
     } catch (error) {
@@ -59,121 +48,123 @@ function ExistingUserCard(props) {
   };
 
   return (
-    <div className="flex h-15 bg-[#f8f9fa] rounded-2xl justify-between items-center mb-2.5 p-5">
-      <div className="flex w-[80%]">
-        <p className="font-bold text-xl text-center w-[20%]">
+    <div className="flex justify-between items-center gap-4 bg-[#F8F6FC] rounded-xl px-5 py-3 mb-2 last:mb-0">
+      <div className="flex flex-1 gap-4 min-w-0">
+        <p className="font-medium text-sm text-[#211C2B] w-[22%] truncate">
           {props.user.name}
         </p>
-        <p className="font-bold text-xl w-[20%]">{props.user.email}</p>
-        <p className="font-bold text-xl w-[60%]">{props.user.role}</p>
+        <p className="text-sm text-[#7A7188] w-[35%] truncate">
+          {props.user.email}
+        </p>
+        <p className="text-sm w-[25%] truncate">
+          <span className="inline-block bg-[#F1EAFB] text-[#6b46a6] text-xs font-semibold px-2.5 py-1 rounded-full">
+            {props.user.role}
+          </span>
+        </p>
       </div>
-      <div className="flex w-[20%] justify-between">
+
+      <div className="flex items-center gap-3 shrink-0">
         <button
-          className="bg-blue-400 p-2.5 w-22.5 rounded-2xl text-white hover:bg-blue-600 hover:cursor-pointer "
+          className="flex items-center gap-1.5 border border-[#E4DFEE] px-3 py-1.5 rounded-lg text-xs font-semibold text-[#6b46a6] hover:bg-[#F1EAFB] transition"
           onClick={handleOpen}
         >
-          EDIT
+          <PencilSimpleIcon size={14} weight="bold" />
+          Edit
         </button>
-        <TrashIcon
-          size={32}
-          className="my-2.5 hover:cursor-pointer"
+        <button
           onClick={handleOpen1}
-        />
-      </div>
-      {/* //backdrop for role editing */}
-      <div>
-        <Backdrop
-          sx={(theme) => ({
-            color: "#fff",
-            zIndex: theme.zIndex.drawer + 1,
-          })}
-          open={open}
+          className="text-[#B7ADC9] hover:text-[#C0392B] transition"
+          aria-label={`Delete ${props.user.name}`}
         >
-          <div className="h-[25vh] w-[50vh] m-auto ">
+          <TrashIcon size={20} />
+        </button>
+      </div>
+
+      {/* Edit role modal */}
+      {open && (
+        <div className="fixed inset-0 bg-[#211C2B]/40 flex items-center justify-center z-50 px-4">
+          <div className="w-full max-w-sm bg-white rounded-2xl p-6 shadow-xl">
             {error && (
-              <Alert severity="warning" className="mb-4.5">
-                Role not updated!Please select another role.
+              <Alert severity="warning" sx={{ mb: 2 }}>
+                Pick a different role than the current one.
               </Alert>
             )}
-            <div className="p-2.5 bg-white h-full w-full rounded-2xl">
-              <h1 className="text-black text-2xl font-bold mb-4">
-                EDIT USER ROLE
-              </h1>
-              <Box className="mb-10">
-                <Select
-                  value={role}
-                  onChange={(e) => {
-                    setRole(e.target.value);
-                  }}
-                  className="w-[90%]"
-                >
-                  <MenuItem value="Project Manager">Project Manager</MenuItem>
-                  <MenuItem value="Inventory Manager">
-                    Inventory Manager
-                  </MenuItem>
-                  <MenuItem value="Employee">Employee</MenuItem>
-                  <MenuItem value="Support">Support</MenuItem>
-                </Select>
-              </Box>
-              <div className="flex justify-around">
-                <button
-                  className="bg-red-300 text-white px-4 py-2 rounded hover:cursor-pointer hover:bg-red-500"
-                  onClick={handleClose}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="bg-white text-black px-4 py-2 rounded hover:cursor-pointer hover:bg-black hover:text-white"
-                  onClick={handleRoleChange}
-                >
-                  Submit
-                </button>
-              </div>
+            <h2 className="font-serif text-xl font-semibold text-[#211C2B] mb-4">
+              Edit user role
+            </h2>
+
+            <label className="block text-xs font-mono font-semibold tracking-wide text-[#7A7188] mb-1.5">
+              ROLE
+            </label>
+            <Select
+              fullWidth
+              displayEmpty
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              sx={{
+                mb: 4,
+                fontFamily: "'IBM Plex Sans', sans-serif",
+                fontSize: "14px",
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#E4DFEE",
+                },
+              }}
+            >
+              <MenuItem value="" disabled>
+                Choose a role
+              </MenuItem>
+              <MenuItem value="Project Manager">Project Manager</MenuItem>
+              <MenuItem value="Inventory Manager">Inventory Manager</MenuItem>
+              <MenuItem value="Employee">Employee</MenuItem>
+              <MenuItem value="Support">Support</MenuItem>
+            </Select>
+
+            <div className="flex gap-2">
+              <button
+                className="flex-1 h-10 rounded-lg border border-[#E4DFEE] text-sm font-semibold text-[#7A7188] hover:bg-[#F8F6FC] transition"
+                onClick={handleClose}
+              >
+                Cancel
+              </button>
+              <button
+                className="flex-1 h-10 rounded-lg bg-[#6b46a6] text-sm font-semibold text-white hover:bg-[#5a3a8c] transition"
+                onClick={handleRoleChange}
+              >
+                Save
+              </button>
             </div>
           </div>
-        </Backdrop>
-      </div>
-      {/* backdrop for deleting user */}
-      <div>
-        <Backdrop
-          sx={(theme) => ({
-            color: "#fff",
-            zIndex: theme.zIndex.drawer + 1,
-          })}
-          open={open1}
-        >
-          <div className="h-[25vh] w-[50vh] m-auto ">
-            {error && (
-              <Alert severity="warning" className="mb-4.5">
-                Role not updated!Please select another role.
-              </Alert>
-            )}
-            <div className="p-2.5 bg-white h-full w-full rounded-2xl">
-              <h1 className="text-black text-2xl font-bold mb-4">
-                DELETE USER
-              </h1>
-              <p className="text-black text-xl pb-3.5">
-                Do you want to permanently delete this user from this
-                organisation?
-              </p>
-              <div className="flex justify-around">
-                <button
-                  className="bg-red-300 text-white px-4 py-2 rounded hover:cursor-pointer hover:bg-red-500"
-                  onClick={handleClose1}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="bg-white text-black px-4 py-2 rounded hover:cursor-pointer hover:bg-black hover:text-white"
-                  onClick={handleDelete}
-                >
-                  Delete
-                </button>
-              </div>
+        </div>
+      )}
+
+      {/* Delete modal */}
+      {open1 && (
+        <div className="fixed inset-0 bg-[#211C2B]/40 flex items-center justify-center z-50 px-4">
+          <div className="w-full max-w-sm bg-white rounded-2xl p-6 shadow-xl">
+            <h2 className="font-serif text-xl font-semibold text-[#211C2B] mb-2">
+              Delete user
+            </h2>
+            <p className="text-sm text-[#7A7188] mb-6">
+              Remove {props.user.name} from this organization? This can't be
+              undone.
+            </p>
+            <div className="flex gap-2">
+              <button
+                className="flex-1 h-10 rounded-lg border border-[#E4DFEE] text-sm font-semibold text-[#7A7188] hover:bg-[#F8F6FC] transition"
+                onClick={handleClose1}
+              >
+                Cancel
+              </button>
+              <button
+                className="flex-1 h-10 rounded-lg bg-[#C0392B] text-sm font-semibold text-white hover:bg-[#a5301f] transition"
+                onClick={handleDelete}
+              >
+                Delete
+              </button>
             </div>
           </div>
-        </Backdrop>
-      </div>
+        </div>
+      )}
     </div>
   );
 }

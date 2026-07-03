@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
-import "../css/registration.css"; // Ensure this path matches your folder structure
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Registration = () => {
@@ -16,136 +10,159 @@ const Registration = () => {
     password: "",
     confirmPassword: "",
   });
-
-  const [error, setError] = React.useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    if (error) setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords don't match.");
+      return;
+    }
+
+    setLoading(true);
     try {
-      const res = await axios.post("http://localhost:5000/register", {
+      await axios.post("http://localhost:5000/register", {
         name: formData.name,
-        password: formData.password,
         email: formData.email,
+        password: formData.password,
       });
       navigate("/login");
-      console.log(res);
     } catch (err) {
-      setError(err.res.data);
-      alert(error);
+      setError(err.response?.data || "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="reg-wrapper">
-      <div className="reg-card">
-        {/* LEFT SIDE: IMAGE */}
-        <div className="reg-left">
-          <Typography
-            variant="h4"
-            component="h2"
-            className="reg-logo"
-            backgroundColor="#fffafb"
-          >
-            NexUrb
-          </Typography>
+    <div className="min-h-screen flex items-center justify-center bg-[#FCFBFE] px-6 py-12">
+      <div className="w-full max-w-sm">
+        {/* Brand mark */}
+        <p className="font-mono text-[10px] font-semibold tracking-[2.5px] text-[#6b46a6] mb-1 text-center">
+          CREATE ACCOUNT
+        </p>
+        <p className="font-serif text-2xl font-semibold text-[#211C2B] mb-8 text-center leading-none">
+          Nex<span className="text-[#6b46a6]">Urb</span>
+        </p>
 
-          <img
-            src="https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg"
-            alt="3D Character"
-            className="reg-img"
-          />
-        </div>
+        <div className="bg-white border border-[#E4DFEE] rounded-2xl shadow-[0_10px_30px_-18px_rgba(33,28,43,0.25)] p-8">
+          <h1 className="font-serif text-2xl font-semibold text-[#211C2B] mb-1">
+            Get started
+          </h1>
+          <p className="text-sm text-[#7A7188] mb-6">
+            Set up your account to manage inventory and projects.
+          </p>
 
-        {/* RIGHT SIDE: FORM */}
-        <div className="reg-right">
-          <Typography variant="h4" className="reg-header">
-            Registration
-          </Typography>
-
-          <form onSubmit={handleSubmit} className="reg-form">
-            <TextField
-              label="Name"
-              variant="standard"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              fullWidth
-              required
-              className="reg-input"
-            />
-
-            <TextField
-              label="Email"
-              variant="standard"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              fullWidth
-              required
-              className="reg-input"
-            />
-
-            <TextField
-              label="Password"
-              variant="standard"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              fullWidth
-              required
-              className="reg-input"
-            />
-
-            <TextField
-              label="Confirm Password"
-              variant="standard"
-              name="confirmPassword"
-              type="password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              fullWidth
-              required
-              className="reg-input"
-            />
-
-            <Button
-              type="submit"
-              variant="contained"
-              className="reg-btn-primary"
-            >
-              Register
-            </Button>
-          </form>
-
-          <Button
-            variant="outlined"
-            className="reg-btn-google"
-            startIcon={
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
-                alt="Google"
-                className="google-icon"
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-xs font-mono font-semibold tracking-wide text-[#7A7188] mb-1.5"
+              >
+                NAME
+              </label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className="w-full rounded-lg border border-[#E4DFEE] bg-[#F8F6FC] px-4 py-2.5 text-sm text-[#211C2B] outline-none transition focus:border-[#6b46a6] focus:ring-2 focus:ring-[#6b46a6]/20"
+                placeholder="Jane Doe"
               />
-            }
-          >
-            Sign up with Google
-          </Button>
-          {/* {error && <p id="err">User already exists!</p>} */}
+            </div>
 
-          <Typography variant="body2" className="reg-login-text">
-            Already have an account?{" "}
-            <Link href="/login" underline="hover" className="reg-link">
-              Sign in
-            </Link>
-          </Typography>
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-xs font-mono font-semibold tracking-wide text-[#7A7188] mb-1.5"
+              >
+                EMAIL
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="w-full rounded-lg border border-[#E4DFEE] bg-[#F8F6FC] px-4 py-2.5 text-sm text-[#211C2B] outline-none transition focus:border-[#6b46a6] focus:ring-2 focus:ring-[#6b46a6]/20"
+                placeholder="you@company.com"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-xs font-mono font-semibold tracking-wide text-[#7A7188] mb-1.5"
+              >
+                PASSWORD
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className="w-full rounded-lg border border-[#E4DFEE] bg-[#F8F6FC] px-4 py-2.5 text-sm text-[#211C2B] outline-none transition focus:border-[#6b46a6] focus:ring-2 focus:ring-[#6b46a6]/20"
+                placeholder="••••••••"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="confirmPassword"
+                className="block text-xs font-mono font-semibold tracking-wide text-[#7A7188] mb-1.5"
+              >
+                CONFIRM PASSWORD
+              </label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                className="w-full rounded-lg border border-[#E4DFEE] bg-[#F8F6FC] px-4 py-2.5 text-sm text-[#211C2B] outline-none transition focus:border-[#6b46a6] focus:ring-2 focus:ring-[#6b46a6]/20"
+                placeholder="••••••••"
+              />
+            </div>
+
+            {error && (
+              <p className="text-sm text-[#C0392B] bg-[#FDEDEC] rounded-lg px-3 py-2">
+                {error}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-lg bg-[#6b46a6] py-2.5 text-sm font-semibold text-white transition hover:bg-[#5a3a8c] disabled:opacity-60 disabled:cursor-not-allowed mt-2"
+            >
+              {loading ? "Creating account…" : "Create account"}
+            </button>
+          </form>
         </div>
+
+        <p className="text-sm text-[#7A7188] text-center mt-6">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-[#6b46a6] font-medium hover:underline"
+          >
+            Sign in
+          </Link>
+        </p>
       </div>
     </div>
   );
