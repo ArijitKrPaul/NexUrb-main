@@ -10,90 +10,81 @@ import { useNavigate } from "react-router-dom";
 const DashboardCard = () => {
   const navigate = useNavigate();
 
-  const project = () => {
-    navigate("/home/project");
-  };
-  const contact = () => {
-    navigate("/home/contacts");
-  };
-
-  const register = () => {
-    navigate("/home/register");
-  };
-
-  const complain = () => {
-    navigate("/home/complaint");
-  };
+  const cards = [
+    {
+      key: "projects",
+      iconBg: "bg-blue-50",
+      icon: <ClipboardTextIcon size={44} color="#3d49c7" />,
+      title: "PROJECTS",
+      description:
+        "Track milestones, deliverables, and timeline compliance across all urban developments.",
+      cta: "View Projects",
+      ctaClass: "bg-blue-50",
+      cardClass: "bg-white",
+      path: "/home/project",
+    },
+    {
+      key: "directory",
+      iconBg: "bg-green-50",
+      icon: <AddressBookTabsIcon size={44} color="#14870c" />,
+      title: "ORGANISATION DIRECTORY",
+      description:
+        "Centralized access to independent organizations and inter-agency stakeholders.",
+      cta: "Open Directory",
+      ctaClass: "bg-green-50",
+      cardClass: "bg-white",
+      path: "/home/contacts",
+    },
+    {
+      key: "complaint",
+      iconBg: "bg-orange-50",
+      icon: <CameraPlusIcon size={44} color="#d86e18" />,
+      title: "LODGE COMPLAINT",
+      description:
+        "Directly report infrastructure issues or service disruptions to the relevant organization with photo evidence.",
+      cta: "File Complaint",
+      ctaClass: "bg-orange-50",
+      cardClass: "bg-white",
+      path: "/home/complaint",
+    },
+    {
+      key: "registration",
+      iconBg: "bg-gray-500",
+      icon: <DotsNineIcon size={44} color="#fefbfb" weight="bold" />,
+      title: "REGISTRATION",
+      description:
+        "Complete your organisation onboarding to unlock full access to executive tools and cross-agency reporting.",
+      cta: "Register Now",
+      ctaClass: "bg-white text-black",
+      cardClass: "bg-black text-white justify-center",
+      path: "/home/register",
+    },
+  ];
 
   return (
     <div className="grid grid-cols-2 gap-6 py-10 auto-rows-fr">
-      <div className="bg-white w-full rounded-2xl p-5 hover:shadow-xl ">
-        <div className="bg-blue-50 p-1.5 w-15 flex justify-center rounded h-20 items-center mb-5 ">
-          <ClipboardTextIcon size={44} color="#3d49c7 " />
-        </div>
-        <p className="font-extrabold text-2xl text-left">PROJECTS</p>
-        <p className="mt-3.5 font-light text-left text-xl">
-          Track milestones, deliverables, and timeline compliance across all
-          urban developments.
-        </p>
-        <button
-          className="uppercase active:scale-95 mt-7.5 p-2.5 bg-blue-50 rounded"
-          onClick={project}
+      {cards.map((card) => (
+        <div
+          key={card.key}
+          className={`${card.cardClass} w-full rounded-2xl p-5 flex flex-col hover:shadow-xl`}
         >
-          View Projects{" "}
-        </button>
-      </div>
-      <div className="bg-white  w-full rounded-2xl p-5 hover:shadow-xl">
-        <div className="bg-green-50 p-1.5 w-15 flex justify-center rounded h-20 items-center mb-5">
-          <AddressBookTabsIcon size={44} color="#14870c" />
+          <div
+            className={`${card.iconBg} w-20 h-20 flex justify-center items-center rounded mb-5`}
+          >
+            {card.icon}
+          </div>
+          <p className="font-extrabold text-2xl text-left">{card.title}</p>
+          <p className="mt-3.5 font-light text-left text-xl">
+            {card.description}
+          </p>
+          <button
+            className={`${card.ctaClass} uppercase active:scale-95 mt-7.5 p-2.5 rounded self-start`}
+            onClick={() => navigate(card.path)}
+          >
+            {card.cta}
+          </button>
         </div>
-        <p className="font-extrabold text-2xl text-left">
-          ORGANISATION DIRECTORY
-        </p>
-        <p className="mt-3.5 font-light text-left text-xl">
-          Centralized access to independent organizations and inter-agency
-          stakeholders.
-        </p>
-        <button
-          className="uppercase active:scale-95 mt-7.5 p-2.5 bg-green-50 rounded "
-          onClick={contact}
-        >
-          open directory{" "}
-        </button>
-      </div>
-      <div className="bg-white  w-full rounded-2xl p-5 hover:shadow-xl">
-        <div className="bg-orange-50 p-1.5 w-15 flex justify-center rounded h-20 items-center mb-5">
-          <CameraPlusIcon size={44} color="#d86e18" />
-        </div>
-        <p className="font-extrabold text-2xl text-left">LODGE COMPLAINT</p>
-        <p className="mt-3.5 font-light text-left text-xl">
-          Directly report infrastructure issues or service disruptionsto the
-          relevant organization with photo evidence.
-        </p>
-        <button
-          className="uppercase active:scale-95 mt-7.5 p-2.5 bg-orange-50 rounded"
-          onClick={complain}
-        >
-          file complaint
-        </button>
-      </div>
-      <div className="bg-black text-white  w-full rounded-2xl p-5 flex flex-col justify-center hover:shadow-xl/30">
-        <div className="bg-gray-500 p-1.5 w-15 flex justify-center rounded h-20 items-center mb-5">
-          <DotsNineIcon size={44} color="#fefbfb" weight="bold" />
-        </div>
-        <p className="font-extrabold text-2xl text-left">REGISTRATION</p>
-        <p className="mt-3.5 font-light text-left text-xl">
-          Complete your organisation onboarding to unlock full access to
-          executive tools and cross-agency repporting.
-        </p>
-        <button
-          className="uppercase active:scale-95 mt-7.5 p-2.5 bg-white text-black
-             rounded"
-          onClick={register}
-        >
-          register now
-        </button>
-      </div>
+      ))}
     </div>
   );
 };

@@ -1,12 +1,13 @@
 import React from "react";
 
-import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Grow from "@mui/material/Grow";
 import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
+import { UserCircleIcon } from "@phosphor-icons/react";
 import { useNavigate } from "react-router-dom";
 
 import DashboardCard from "./DashboradCard";
@@ -15,6 +16,7 @@ export default function DashboardComponent() {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
   const navigate = useNavigate();
+
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
@@ -23,9 +25,13 @@ export default function DashboardComponent() {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
-    localStorage.removeItem("user");
-    navigate("/login");
     setOpen(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setOpen(false);
+    navigate("/login");
   };
 
   function handleListKeyDown(event) {
@@ -47,9 +53,9 @@ export default function DashboardComponent() {
     if (prevOpen.current === true && open === false) {
       anchorRef.current.focus();
     }
-
     prevOpen.current = open;
   }, [open]);
+
   return (
     <div className="bg-[#F8F9FA] h-[125vh] w-full p-5">
       <div className="bg-[#F8F9FA] h-[118vh] w-full px-45 py-10">
@@ -66,22 +72,23 @@ export default function DashboardComponent() {
             </p>
           </div>
           <div>
-            <Button
+            <IconButton
               ref={anchorRef}
               id="composition-button"
               aria-controls={open ? "composition-menu" : undefined}
               aria-expanded={open}
               aria-haspopup="true"
+              aria-label="account menu"
               onClick={handleToggle}
-              className="text-black"
+              className="text-black!"
             >
-              Dashboard
-            </Button>
+              <UserCircleIcon size={32} weight="bold" />
+            </IconButton>
             <Popper
               open={open}
               anchorEl={anchorRef.current}
               role={undefined}
-              placement="bottom-start"
+              placement="bottom-end"
               transition
               disablePortal
             >
@@ -90,7 +97,7 @@ export default function DashboardComponent() {
                   {...TransitionProps}
                   style={{
                     transformOrigin:
-                      placement === "bottom-start" ? "left top" : "left bottom",
+                      placement === "bottom-end" ? "right top" : "right bottom",
                   }}
                 >
                   <Paper>
@@ -101,7 +108,7 @@ export default function DashboardComponent() {
                         aria-labelledby="composition-button"
                         onKeyDown={handleListKeyDown}
                       >
-                        <MenuItem onClick={handleClose}>Logout</MenuItem>
+                        <MenuItem onClick={handleLogout}>Logout</MenuItem>
                       </MenuList>
                     </ClickAwayListener>
                   </Paper>

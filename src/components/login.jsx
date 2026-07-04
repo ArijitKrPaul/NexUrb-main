@@ -37,7 +37,7 @@ export default function LoginComponent() {
     localStorage.clear();
     localStorage.setItem("user", JSON.stringify(data));
 
-    if (data.role === "User") navigate("/home");
+    if (data.role === "user") navigate("/home");
     if (data.role === "superadmin") navigate("/Superadmin");
     if (
       ["Employee", "Project Manager", "Inventory Manager", "Support"].includes(

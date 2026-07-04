@@ -1,720 +1,230 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import { DataGrid } from "@mui/x-data-grid";
-import "../css/inventory.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCirclePlus,
-  faTrash,
-  faCircleXmark,
-} from "@fortawesome/free-solid-svg-icons";
-import {
-  Stack,
-  Backdrop,
-  Typography,
-  Button,
-  Toolbar,
-  FormControl,
-  FormHelperText,
-  Select,
-  MenuItem,
-  InputLabel,
-  Alert,
-  Tooltip,
-  IconButton,
-} from "@mui/material";
-import TextField from "@mui/material/TextField";
-import axios from "axios";
+import earth from "../assets/2.mp4";
+import { useNavigate } from "react-router-dom";
 
-export default function InventoryComponent() {
-  const [open, setOpen] = React.useState(false);
-  const [quantity, setQuantity] = React.useState(0);
-  const [open1, setOpen1] = React.useState(false);
-  const [name, setName] = React.useState("");
-  const [amount, setAmount] = React.useState(0);
-  const [price, setPrice] = React.useState(0);
-  const [open2, setOpen2] = React.useState(false);
-  const [del, setDel] = React.useState("");
-  const errorp = document.getElementsByTagName("p")[3];
-  const [rows, setRows] = React.useState([]);
-  const [rowId, setRowId] = React.useState();
-  const [count, setCount] = React.useState(0);
-  const [unit, setUnit] = React.useState("");
-  const [addPermission, setAddPermission] = React.useState(false);
-  const [updatePermission, setUpdatePermission] = React.useState(false);
-  const [deletePermission, setDeletePermission] = React.useState(false);
-
-  // ----- validation state -----
-  const [nameError, setNameError] = React.useState("");
-  const [amountError, setAmountError] = React.useState("");
-  const [priceError, setPriceError] = React.useState("");
-  const [unitError, setUnitError] = React.useState("");
-  const [quantityError, setQuantityError] = React.useState("");
-
-  const clearAddErrors = () => {
-    setNameError("");
-    setAmountError("");
-    setPriceError("");
-    setUnitError("");
-  };
-
-  const handleOpen = (e) => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user.role == "Inventory Manager") {
-      setOpen(true);
-      setRowId(e);
-      setQuantity(0);
-      setQuantityError("");
-    } else {
-      setUpdatePermission(true);
-      setTimeout(() => {
-        setUpdatePermission(false);
-      }, 2000);
-    }
-  };
-
-  React.useEffect(
-    function () {
-      const user = JSON.parse(localStorage.getItem("user"));
-      const dept_id = user.dept_id;
-      const fetchData = async () => {
-        try {
-          const q = await axios.get(`http://localhost:5000/product/${dept_id}`);
-          console.log(q.data);
-          const withId = q.data.map((elem, index) => ({
-            ...elem,
-            id: elem.product_id,
-            displayId: index + 1,
-          }));
-          console.log(withId);
-          setRows(withId);
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      fetchData();
-    },
-    [count],
-  );
-
-  // ----- validators -----
-  const validateAddForm = () => {
-    let valid = true;
-
-    if (!name || !name.trim()) {
-      setNameError("Item name is required");
-      valid = false;
-    } else {
-      setNameError("");
-    }
-
-    const amountNum = Number(amount);
-    if (amount === "" || amount === null || isNaN(amountNum)) {
-      setAmountError("Quantity is required");
-      valid = false;
-    } else if (amountNum <= 0) {
-      setAmountError("Quantity must be greater than 0");
-      valid = false;
-    } else {
-      setAmountError("");
-    }
-
-    const priceNum = Number(price);
-    if (price === "" || price === null || isNaN(priceNum)) {
-      setPriceError("Price is required");
-      valid = false;
-    } else if (priceNum <= 0) {
-      setPriceError("Price must be greater than 0");
-      valid = false;
-    } else {
-      setPriceError("");
-    }
-
-    if (!unit) {
-      setUnitError("Please choose a unit");
-      valid = false;
-    } else {
-      setUnitError("");
-    }
-
-    return valid;
-  };
-
-  const validateQuantity = () => {
-    const qtyNum = Number(quantity);
-    if (quantity === "" || quantity === null || isNaN(qtyNum)) {
-      setQuantityError("Quantity is required");
-      return false;
-    }
-    if (qtyNum < 0) {
-      setQuantityError("Quantity cannot be negative");
-      return false;
-    }
-    setQuantityError("");
-    return true;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!validateAddForm()) {
-      return;
-    }
-
-    try {
-      const user = localStorage.getItem("user");
-      const dept_id = JSON.parse(user).dept_id;
-      const q = await axios.post("http://localhost:5000/addItem", {
-        dept_id: dept_id,
-        name: name,
-        quantity: amount,
-        price: price,
-        unit: unit,
-      });
-      console.log(q);
-    } catch (error) {
-      console.log(error);
-    }
-    setQuantity(0);
-    setOpen(false);
-    setOpen1(false);
-    setCount(count + 1);
-  };
-
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-
-    if (!validateQuantity()) {
-      return;
-    }
-
-    try {
-      const user = localStorage.getItem("user");
-      const dept_id = JSON.parse(user).dept_id;
-      const q = await axios.put("http://localhost:5000/updateItem", {
-        product_id: rowId,
-        quantity: quantity,
-        dept_id: dept_id,
-      });
-      console.log(q);
-    } catch (error) {
-      console.log(error);
-    }
-    setQuantity(0);
-    setOpen(false);
-    setOpen1(false);
-    setCount(count + 1);
-  };
-
-  const handleAdd = () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user.role == "Inventory Manager") {
-      setOpen1(true);
-      setName("");
-      setAmount("");
-      setPrice("");
-      setUnit(""); // <-- this was missing, causing the dropdown to look "stuck"
-      clearAddErrors();
-    } else {
-      setAddPermission(true);
-      setTimeout(() => {
-        setAddPermission(false);
-      }, 2000);
-    }
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setOpen1(false);
-    setDel("");
-    setOpen2(false);
-    setQuantityError("");
-    clearAddErrors();
-    if (errorp) errorp.classList.remove("error");
-  };
-
-  const handleDelete = (e) => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user.role == "Inventory Manager") {
-      console.log(e);
-      setOpen2(true);
-      setRowId(e);
-      if (errorp) {
-        errorp.classList.remove("error");
-        errorp.innerText = "";
-      }
-    } else {
-      setDeletePermission(true);
-      setTimeout(() => {
-        setDeletePermission(false);
-      }, 2000);
-    }
-  };
-
-  const handleDelSubmit = async () => {
-    if (del === "Permanentlydelete") {
-      const user = localStorage.getItem("user");
-      const dept_id = JSON.parse(user).dept_id;
-      try {
-        const q = await axios.delete("http://localhost:5000/deleteItem", {
-          data: {
-            product_id: rowId,
-            dept_id: dept_id,
-          },
-        });
-        setRows((prev) => prev.filter((row) => row.id !== rowId));
-        console.log(q.data);
-      } catch (error) {
-        console.log(error);
-      }
-      setOpen2(false);
-      setDel("");
-    } else {
-      if (errorp) {
-        errorp.innerText = "Wrong Text!";
-        errorp.classList.add("error");
-      }
-    }
-  };
-
-  const columns = [
-    {
-      field: "displayId",
-      headerName: "Ref. No.",
-      width: 130,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params) => (
-        <Typography
-          sx={{
-            fontFamily: "'IBM Plex Mono', monospace",
-            fontSize: "13px",
-            color: "#7A7188",
-          }}
-        >
-          INV-{String(params.value).padStart(4, "0")}
-        </Typography>
-      ),
-    },
-    {
-      field: "name",
-      headerName: "Item name",
-      width: 220,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "quantity",
-      headerName: "Quantity",
-      type: "number",
-      width: 150,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "price",
-      headerName: "Price",
-      type: "number",
-      width: 150,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "unit",
-      headerName: "Unit",
-      type: "text",
-      width: 150,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "addicon",
-      headerName: "",
-      width: 90,
-      align: "center",
-      headerAlign: "center",
-      sortable: false,
-      filterable: false,
-      renderCell: (params) => (
-        <Tooltip title="Update stock">
-          <IconButton
-            size="small"
-            className="Icon"
-            onClick={() => handleOpen(params.row.product_id)}
-            sx={{
-              color: "#B7ADC9",
-              "&:hover": { color: "#6b46a6", backgroundColor: "#F1EAFB" },
-            }}
-          >
-            <FontAwesomeIcon icon={faCirclePlus} size="sm" />
-          </IconButton>
-        </Tooltip>
-      ),
-    },
-    {
-      field: "trashicon",
-      headerName: "",
-      width: 90,
-      align: "center",
-      headerAlign: "center",
-      sortable: false,
-      filterable: false,
-      renderCell: (params) => (
-        <Tooltip title="Delete item">
-          <IconButton
-            size="small"
-            className="Icon"
-            onClick={() => handleDelete(params.row.product_id)}
-            sx={{
-              color: "#B7ADC9",
-              "&:hover": { color: "#C0392B", backgroundColor: "#FDEDEC" },
-            }}
-          >
-            <FontAwesomeIcon icon={faTrash} size="sm" />
-          </IconButton>
-        </Tooltip>
-      ),
-    },
-  ];
-  return (
-    <div>
-      {/* ---------- Header ---------- */}
-      <Toolbar
-        id="ProjectNavbar"
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          px: { xs: 2, sm: 4 },
-          py: 2,
-          borderBottom: "1px solid #E4DFEE",
-          backgroundColor: "#FFFFFF",
-        }}
-      >
-        <Box>
-          <Typography
-            sx={{
-              fontFamily: "'IBM Plex Mono', monospace",
-              fontSize: "10px",
-              fontWeight: 600,
-              letterSpacing: "2.5px",
-              color: "#6b46a6",
-              mb: "2px",
-            }}
-          >
-            INVENTORY REGISTRY
-          </Typography>
-          <Typography
-            sx={{
-              fontFamily: "'Fraunces', Georgia, serif",
-              fontSize: "26px",
-              fontWeight: 600,
-              color: "#211C2B",
-              lineHeight: 1,
-            }}
-          >
-            Nex<span style={{ color: "#6b46a6" }}>Urb</span>
-          </Typography>
-        </Box>
-
-        <Tooltip title="Add new item">
-          <IconButton
-            id="addButton"
-            onClick={handleAdd}
-            sx={{
-              border: "1.5px solid #6b46a6",
-              borderRadius: "10px",
-              px: 2,
-              py: 0.75,
-              color: "#6b46a6",
-              gap: 1,
-              "&:hover": { backgroundColor: "#F1EAFB" },
-            }}
-          >
-            <FontAwesomeIcon icon={faCirclePlus} size="sm" />
-            <Typography
-              component="span"
-              sx={{
-                fontFamily: "'IBM Plex Sans', sans-serif",
-                fontWeight: 600,
-                fontSize: "13px",
-              }}
-            >
-              New Item
-            </Typography>
-          </IconButton>
-        </Tooltip>
-      </Toolbar>
-
-      <div className="flex justify-center mt-2.5">
-        {addPermission && (
-          <Alert severity="warning">
-            Not sufficient Permission to add items
-          </Alert>
-        )}
-        {updatePermission && (
-          <Alert severity="warning">
-            Not sufficient Permission to update items
-          </Alert>
-        )}
-        {deletePermission && (
-          <Alert severity="warning">
-            Not sufficient Permission to delete itmes
-          </Alert>
-        )}
-      </div>
-
-      {/* ---------- Table ---------- */}
-      <Box
-        className="inventory-container"
-        sx={{
-          m: { xs: 2, sm: 4 },
-          p: 1.5,
-          borderRadius: "16px",
-          backgroundColor: "#FFFFFF",
-          border: "1px solid #E4DFEE",
-          boxShadow: "0 10px 30px -18px rgba(33,28,43,0.25)",
-        }}
-      >
-        <DataGrid
-          id="inventory-table"
-          rows={rows}
-          columns={columns}
-          pageSize={10}
-          pageSizeOptions={[10, 15]}
-          getRowClassName={(params) =>
-            params.indexRelativeToCurrentPage % 2 === 0 ? "row-even" : "row-odd"
-          }
-          sx={{
-            border: "none",
-            fontFamily: "'IBM Plex Sans', sans-serif",
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: "#F8F6FC",
-              borderBottom: "1px solid #E4DFEE",
-            },
-            "& .MuiDataGrid-columnHeaderTitle": {
-              fontFamily: "'IBM Plex Mono', monospace",
-              fontWeight: 600,
-              fontSize: "11px",
-              letterSpacing: "1px",
-              color: "#6b46a6",
-              textTransform: "uppercase",
-            },
-            "& .MuiDataGrid-cell": {
-              borderBottom: "1px solid #F1EEF8",
-              fontSize: "14px",
-              color: "#211C2B",
-            },
-            "& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within": {
-              outline: "none",
-            },
-            "& .row-even": { backgroundColor: "#FFFFFF" },
-            "& .row-odd": { backgroundColor: "#FCFBFE" },
-            "& .MuiDataGrid-row:hover": {
-              backgroundColor: "#F1EAFB !important",
-            },
-            "& .MuiDataGrid-footerContainer": {
-              borderTop: "1px solid #E4DFEE",
-              fontFamily: "'IBM Plex Sans', sans-serif",
-            },
-          }}
+const FEATURES = [
+  {
+    code: "OPS",
+    title: "Project Management",
+    description:
+      "Track every department's projects in one place — what's shipped, what's in progress, and what's stalled.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="h-7 w-7">
+        <path
+          d="M4 5h16M4 5v14a1 1 0 001 1h6M4 5l2-2h4l2 2M20 5v6M14 20l3-3 3 3M17 17v4"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
-      </Box>
+      </svg>
+    ),
+  },
+  {
+    code: "STOCK",
+    title: "Inventory Management",
+    description:
+      "See stock levels, coordinators, and queue position for every project's materials at a glance.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="h-7 w-7">
+        <path
+          d="M3 7l9-4 9 4-9 4-9-4zm0 0v10l9 4m0-14v14m9-14v10l-9 4"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+  },
+  {
+    code: "CIVIC",
+    title: "Public Complaints",
+    description:
+      "Residents can lodge infrastructure issues directly, so problems reach the right department faster.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="h-7 w-7">
+        <path
+          d="M5 3v18M5 3h11l-2 4 2 4H5"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+  },
+];
 
-      {/* Update Quantity modal */}
-      <Backdrop
-        sx={(theme) => ({ color: "black", zIndex: theme.zIndex.drawer + 1 })}
-        open={open}
-      >
-        <Stack
-          id="updateItem"
-          gap={2}
-          width={450}
-          alignContent={"center"}
-          textAlign={"center"}
-          sx={{ backgroundColor: "white", p: 3, borderRadius: 2 }}
-        >
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-            width="100%"
-            mb={2}
-          >
-            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "left" }}>
-              Update Quantity
-            </Typography>
-            <FontAwesomeIcon
-              icon={faCircleXmark}
-              size="2x"
-              color="red"
-              className="xMark"
-              onClick={handleClose}
-              style={{ cursor: "pointer" }}
-            />
-          </Box>
-          <TextField
-            id="filled-basic"
-            label="Enter new Quantity"
-            variant="filled"
-            type="number"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-            error={!!quantityError}
-            helperText={quantityError}
-            inputProps={{ min: 0 }}
-          />
-          <Button className="inventory-form-button" onClick={handleUpdate}>
-            Submit
-          </Button>
-        </Stack>
-      </Backdrop>
+function CornerMarks() {
+  return (
+    <>
+      <span className="pointer-events-none absolute left-6 top-6 h-6 w-6 border-l-2 border-t-2 border-[#F7F5F1]/40" />
+      <span className="pointer-events-none absolute right-6 top-6 h-6 w-6 border-r-2 border-t-2 border-[#F7F5F1]/40" />
+      <span className="pointer-events-none absolute bottom-6 left-6 h-6 w-6 border-b-2 border-l-2 border-[#F7F5F1]/40" />
+      <span className="pointer-events-none absolute bottom-6 right-6 h-6 w-6 border-b-2 border-r-2 border-[#F7F5F1]/40" />
+    </>
+  );
+}
 
-      {/* Add New Item modal */}
-      <Backdrop
-        sx={(theme) => ({ color: "black", zIndex: theme.zIndex.drawer + 1 })}
-        open={open1}
-      >
-        <Stack
-          id="updateItem"
-          gap={2}
-          width={450}
-          alignContent={"center"}
-          textAlign={"center"}
-          sx={{ backgroundColor: "white", p: 3, borderRadius: 2 }}
+export default function HomeComponent() {
+  const navigate = useNavigate();
+
+  const handleLogin = () => navigate("/login");
+  const handleRegistration = () => navigate("/register");
+
+  return (
+    <div
+      className="w-full scroll-smooth"
+      style={{ fontFamily: "'IBM Plex Sans', sans-serif" }}
+    >
+      {/* SCREEN 1 — hero */}
+      <section className="relative h-screen w-full overflow-hidden bg-[#10161F] text-[#F7F5F1]">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 h-full w-full object-cover opacity-50"
         >
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-            width="100%"
-            mb={2}
+          <source src={earth} type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#10161F] via-[#10161F]/60 to-[#10161F]/20" />
+
+        <CornerMarks />
+
+        {/* Nav */}
+        <nav className="relative z-10 flex items-center justify-between px-6 py-6 md:px-14">
+          <h2
+            className="text-2xl tracking-tight"
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 600,
+            }}
           >
-            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "left" }}>
-              Add New Item
-            </Typography>
-            <FontAwesomeIcon
-              icon={faCircleXmark}
-              size="2x"
-              color="red"
-              className="xMark"
-              onClick={handleClose}
-              style={{ cursor: "pointer" }}
-            />
-          </Box>
-          <TextField
-            id="filled-basic"
-            label="Enter Item Name"
-            variant="filled"
-            type="text"
-            value={name}
-            required
-            onChange={(e) => setName(e.target.value)}
-            error={!!nameError}
-            helperText={nameError}
-          />
-          <TextField
-            id="filled-basic"
-            label="Enter Quantity"
-            variant="filled"
-            type="number"
-            value={amount}
-            required
-            onChange={(e) => setAmount(e.target.value)}
-            error={!!amountError}
-            helperText={amountError}
-            inputProps={{ min: 0, step: "any" }}
-          />
-          <TextField
-            id="filled-basic"
-            label="Price per Unit"
-            variant="filled"
-            type="number"
-            value={price}
-            required
-            onChange={(e) => setPrice(e.target.value)}
-            error={!!priceError}
-            helperText={priceError}
-            inputProps={{ min: 0, step: "any" }}
-          />
-          <FormControl fullWidth error={!!unitError} required>
-            <InputLabel id="unit-select-label">Choose Unit</InputLabel>
-            <Select
-              labelId="unit-select-label"
-              id="unit-select"
-              name="unit"
-              value={unit}
-              label="Choose Unit"
-              onChange={(e) => {
-                setUnit(e.target.value);
-                setUnitError("");
-              }}
+            NexUrb
+          </h2>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleLogin}
+              className="rounded-sm border border-[#F7F5F1]/30 px-5 py-2 text-sm tracking-wide text-[#F7F5F1] transition-colors hover:border-[#FF6A3D] hover:text-[#FF6A3D]"
             >
-              <MenuItem value={"per kg"}>Per Kg</MenuItem>
-              <MenuItem value={"per ton"}>Per Ton</MenuItem>
-              <MenuItem value={"per quintal"}>Per Quintal</MenuItem>
-              <MenuItem value={"per litre"}>Per Litre</MenuItem>
-              <MenuItem value={"per metre"}>Per Metre</MenuItem>
-            </Select>
-            {unitError && <FormHelperText>{unitError}</FormHelperText>}
-          </FormControl>
-          <Button className="inventory-form-button" onClick={handleSubmit}>
-            Submit
-          </Button>
-        </Stack>
-      </Backdrop>
+              Log in
+            </button>
+            <button
+              onClick={handleRegistration}
+              className="rounded-sm bg-[#FF6A3D] px-5 py-2 text-sm font-medium tracking-wide text-[#10161F] transition-colors hover:bg-[#ff7f59]"
+            >
+              Register
+            </button>
+          </div>
+        </nav>
 
-      {/* Delete Item modal */}
-      <Backdrop
-        sx={(theme) => ({ color: "black", zIndex: theme.zIndex.drawer + 1 })}
-        open={open2}
-      >
-        <Stack
-          id="DelItem"
-          gap={2}
-          width={450}
-          alignContent={"center"}
-          textAlign={"center"}
-          sx={{ backgroundColor: "white", p: 3, borderRadius: 2 }}
-        >
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-            width="100%"
-            mb={2}
+        {/* Hero copy */}
+        <div className="relative z-10 flex h-[calc(100%-88px)] flex-col justify-end px-6 pb-20 md:px-14 md:pb-24">
+          <p
+            className="mb-3 text-xs tracking-[0.25em] text-[#FF6A3D]"
+            style={{ fontFamily: "'IBM Plex Mono', monospace" }}
           >
-            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "left" }}>
-              Delete Item
-            </Typography>
-            <FontAwesomeIcon
-              icon={faCircleXmark}
-              size="2x"
-              color="red"
-              className="xMark"
-              onClick={handleClose}
-              style={{ cursor: "pointer" }}
+            CIVIC INFRASTRUCTURE PLATFORM
+          </p>
+          <h1
+            className="mb-6 text-5xl leading-tight md:text-7xl"
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+            }}
+          >
+            NexUrb
+          </h1>
+          <p className="max-w-xl text-base leading-relaxed text-[#F7F5F1]/80 md:text-lg">
+            NexUrb keeps project and inventory management in one system, and
+            gives the public a direct line to report infrastructural issues — so
+            departments stay coordinated and residents stay heard.
+          </p>
+        </div>
+
+        {/* Scroll cue */}
+        <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-[#F7F5F1]/50">
+          <span
+            className="text-[10px] tracking-[0.2em]"
+            style={{ fontFamily: "'IBM Plex Mono', monospace" }}
+          >
+            SCROLL
+          </span>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            className="h-4 w-4 animate-bounce"
+          >
+            <path
+              d="M6 9l6 6 6-6"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
-          </Box>
-          <p>Do you want to permanently delete this item?</p>
-          <TextField
-            id="filled-basic"
-            label="Enter 'Permanentlydelete'"
-            variant="filled"
-            type="text"
-            value={del}
-            onChange={(e) => setDel(e.target.value)}
-          />
-          <p></p>
-          <Button className="inventory-form-button" onClick={handleDelSubmit}>
-            Submit
-          </Button>
-        </Stack>
-      </Backdrop>
+          </svg>
+        </div>
+      </section>
+
+      {/* SCREEN 2 — features */}
+      <section className="flex h-screen w-full flex-col justify-center bg-[#EDEBE6] px-6 py-16 text-[#10161F] md:px-14">
+        <div className="mx-auto w-full max-w-6xl">
+          <p
+            className="mb-2 text-xs tracking-[0.25em] text-[#FF6A3D]"
+            style={{ fontFamily: "'IBM Plex Mono', monospace" }}
+          >
+            WHAT NEXURB DOES
+          </p>
+          <h2
+            className="mb-10 text-3xl md:text-4xl"
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 600,
+            }}
+          >
+            Three modules, one platform
+          </h2>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {FEATURES.map((f) => (
+              <div
+                key={f.code}
+                className="group relative rounded-sm border border-[#4C5B6B]/25 bg-[#F7F5F1] p-7 transition-all hover:-translate-y-1 hover:border-[#FF6A3D]/60 hover:shadow-lg"
+              >
+                <span className="pointer-events-none absolute left-2 top-2 h-3 w-3 border-l border-t border-[#4C5B6B]/40" />
+                <span className="pointer-events-none absolute bottom-2 right-2 h-3 w-3 border-b border-r border-[#4C5B6B]/40" />
+
+                <p
+                  className="mb-4 text-[11px] tracking-[0.2em] text-[#4C5B6B]"
+                  style={{ fontFamily: "'IBM Plex Mono', monospace" }}
+                >
+                  {f.code}
+                </p>
+                <div className="mb-4 text-[#FF6A3D] transition-colors group-hover:text-[#10161F]">
+                  {f.icon}
+                </div>
+                <h3
+                  className="mb-3 text-lg"
+                  style={{
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    fontWeight: 600,
+                  }}
+                >
+                  {f.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-[#4C5B6B]">
+                  {f.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <footer className="mx-auto mt-12 w-full max-w-6xl text-center text-xs text-[#4C5B6B]/70">
+          <p>&copy; NexUrb</p>
+        </footer>
+      </section>
     </div>
   );
 }

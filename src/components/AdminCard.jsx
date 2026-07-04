@@ -50,7 +50,7 @@ const AdminCard = (props) => {
         </button>
         <button
           className="bg-red-500 text-white px-5 py-2 rounded-xl active:scale-95 hover:bg-red-600 transition"
-          onClick={() => props.onDecline(e.id)}
+          onClick={() => props.onDecline(e.id, e.user_id)}
         >
           Decline
         </button>

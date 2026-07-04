@@ -107,13 +107,14 @@ export default function AdminComponent() {
 
   const handleAccept = async (id, name, state, city, location, user_id) => {
     try {
-      await axios.delete(`http://localhost:5000/deptRegister/${id}`);
+      await axios.delete(`http://localhost:5000/notify/${id}`);
       await axios.post("http://localhost:5000/deptAccept", {
         name,
         state,
         city,
         location,
         id,
+        user_id,
       });
       await axios.put("http://localhost:5000/addDeptId", { id, user_id });
       setCount(count + 1);
@@ -122,9 +123,11 @@ export default function AdminComponent() {
     }
   };
 
-  const handleDecline = async (id) => {
+  const handleDecline = async (id, user_id) => {
     try {
-      await axios.delete(`http://localhost:5000/deptRegister/${id}`);
+      await axios.delete(`http://localhost:5000/deptRegister/${id}`, {
+        data: { user_id: user_id },
+      });
       setCount(count + 1);
     } catch (err) {
       console.log(err);
