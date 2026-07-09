@@ -661,6 +661,7 @@ export default function InventoryComponent() {
               <MenuItem value={"per quintal"}>Per Quintal</MenuItem>
               <MenuItem value={"per litre"}>Per Litre</MenuItem>
               <MenuItem value={"per metre"}>Per Metre</MenuItem>
+              <MenuItem value={"per piece"}>Per Piece</MenuItem>
             </Select>
             {unitError && <FormHelperText>{unitError}</FormHelperText>}
           </FormControl>

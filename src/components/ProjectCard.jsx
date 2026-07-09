@@ -6,9 +6,11 @@ import {
   faBuilding,
   faCalendarDays,
   faListCheck,
+  faPen,
 } from "@fortawesome/free-solid-svg-icons";
 import Chip from "@mui/material/Chip";
 import Button from "@mui/material/Button";
+import { Alert } from "@mui/material";
 
 const statusStyles = {
   ongoing: { bg: "#FFF3CD", color: "#8A6100", label: "Ongoing" },
@@ -16,9 +18,11 @@ const statusStyles = {
 };
 
 const ProjectCard = (props) => {
-  const { data, onStatusChange } = props;
+  const { data, onStatusChange, onUpdate } = props;
   const status = (data.status || "ongoing").toLowerCase();
   const style = statusStyles[status] || statusStyles.ongoing;
+
+  const [permission, setPermission] = React.useState(false);
 
   const formattedDate = data.date
     ? new Date(data.date).toLocaleDateString("en-IN", {
@@ -28,8 +32,20 @@ const ProjectCard = (props) => {
       })
     : "—";
 
+  const checkPermission = () => {
+    const q = JSON.parse(localStorage.getItem("user"));
+    const role = q?.role;
+    if (role === "Project Manager") return true;
+    setPermission(true);
+    setTimeout(() => {
+      setPermission(false);
+    }, 2000);
+    return false;
+  };
+
   const handleMarkCompleted = async (e) => {
     e.stopPropagation();
+    if (!checkPermission()) return;
     try {
       await axios.patch(
         `http://localhost:5000/project/${data.project_id}/status`,
@@ -37,11 +53,16 @@ const ProjectCard = (props) => {
           status: "completed",
         },
       );
-      console.log("calling onStatusChange with:", data.project_id, "completed");
       if (onStatusChange) onStatusChange(data.project_id, "completed");
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleUpdateClick = (e) => {
+    e.stopPropagation();
+    if (!checkPermission()) return;
+    if (onUpdate) onUpdate(data);
   };
 
   return (
@@ -89,14 +110,31 @@ const ProjectCard = (props) => {
         </div>
       </div>
 
-      {/* Footer action */}
-      {status === "ongoing" && (
+      {/* Footer actions */}
+      <div className="flex gap-2 mb-1">
+        {status === "ongoing" && (
+          <Button
+            fullWidth
+            variant="outlined"
+            size="small"
+            startIcon={<FontAwesomeIcon icon={faListCheck} />}
+            onClick={handleMarkCompleted}
+            sx={{
+              borderColor: "#6b46a6",
+              color: "#6b46a6",
+              textTransform: "none",
+              "&:hover": { borderColor: "#553c8f", backgroundColor: "#f5f0fa" },
+            }}
+          >
+            Mark as Completed
+          </Button>
+        )}
         <Button
           fullWidth
           variant="outlined"
           size="small"
-          startIcon={<FontAwesomeIcon icon={faListCheck} />}
-          onClick={handleMarkCompleted}
+          startIcon={<FontAwesomeIcon icon={faPen} />}
+          onClick={handleUpdateClick}
           sx={{
             borderColor: "#6b46a6",
             color: "#6b46a6",
@@ -104,9 +142,10 @@ const ProjectCard = (props) => {
             "&:hover": { borderColor: "#553c8f", backgroundColor: "#f5f0fa" },
           }}
         >
-          Mark as Completed
+          Update
         </Button>
-      )}
+      </div>
+      {permission && <Alert severity="warning">Not Suitable Permission</Alert>}
     </div>
   );
 };

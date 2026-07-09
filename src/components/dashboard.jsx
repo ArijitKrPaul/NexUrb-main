@@ -21,12 +21,12 @@ export default function DashboardComponent() {
     setOpen((prevOpen) => !prevOpen);
   };
 
-  const handleClose = (event) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
-      return;
-    }
-    setOpen(false);
-  };
+  // const handleClose = (event) => {
+  //   if (anchorRef.current && anchorRef.current.contains(event.target)) {
+  //     return;
+  //   }
+  //   setOpen(false);
+  // };
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -57,8 +57,8 @@ export default function DashboardComponent() {
   }, [open]);
 
   return (
-    <div className="bg-[#F8F9FA] h-[125vh] w-full p-5">
-      <div className="bg-[#F8F9FA] h-[118vh] w-full px-45 py-10">
+    <div className="bg-[#F8F9FA] h-[170vh] w-full p-5">
+      <div className="bg-[#F8F9FA] h-[135vh] w-full px-45 py-10">
         <div className="border-b border-black pb-10 flex justify-between">
           <div>
             <p className=" text-left text-5xl font-extrabold mb-15 font-sans">

@@ -153,6 +153,7 @@ export default function AddUserComponent() {
               <MenuItem value="Employee">Employee</MenuItem>
               <MenuItem value="Project Manager">Project Manager</MenuItem>
               <MenuItem value="Inventory Manager">Inventory Manager</MenuItem>
+              <MenuItem value="Support">Support</MenuItem>
             </Select>
 
             <div className="flex gap-2">

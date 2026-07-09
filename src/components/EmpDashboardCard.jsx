@@ -16,6 +16,10 @@ const EmpDashboardCard = () => {
   const project = () => {
     navigate("/home/project");
   };
+
+  const allProject = () => {
+    navigate("/home/allproject");
+  };
   const contact = () => {
     navigate("/home/contacts");
   };
@@ -39,12 +43,20 @@ const EmpDashboardCard = () => {
           Track milestones, deliverables, and timeline compliance across all
           urban developments.
         </p>
-        <button
-          className="uppercase active:scale-95 mt-7.5 p-2.5 bg-blue-50 rounded"
-          onClick={project}
-        >
-          View Projects{" "}
-        </button>
+        <div className="flex gap-2">
+          <button
+            className="uppercase active:scale-95 mt-7.5 p-2.5 bg-blue-50 rounded"
+            onClick={allProject}
+          >
+            View Projects{" "}
+          </button>
+          <button
+            className="uppercase active:scale-95 mt-7.5 p-2.5 bg-blue-50 rounded"
+            onClick={project}
+          >
+            View Departmental Projects{" "}
+          </button>
+        </div>
       </div>
       <div className="bg-white  w-full rounded-2xl p-5 hover:shadow-xl">
         <div className="bg-green-50 p-1.5 w-15 flex justify-center rounded h-20 items-center mb-5">

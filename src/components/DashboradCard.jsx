@@ -3,6 +3,7 @@ import {
   CameraPlusIcon,
   ClipboardTextIcon,
   DotsNineIcon,
+  ListChecksIcon,
 } from "@phosphor-icons/react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +22,7 @@ const DashboardCard = () => {
       cta: "View Projects",
       ctaClass: "bg-blue-50",
       cardClass: "bg-white",
-      path: "/home/project",
+      path: "/home/Allproject",
     },
     {
       key: "directory",
@@ -47,6 +48,7 @@ const DashboardCard = () => {
       cardClass: "bg-white",
       path: "/home/complaint",
     },
+
     {
       key: "registration",
       iconBg: "bg-gray-500",
@@ -58,6 +60,18 @@ const DashboardCard = () => {
       ctaClass: "bg-white text-black",
       cardClass: "bg-black text-white justify-center",
       path: "/home/register",
+    },
+    {
+      key: "my-complaints",
+      iconBg: "bg-purple-50",
+      icon: <ListChecksIcon size={44} color="#7c3aed" />,
+      title: "MY COMPLAINTS",
+      description:
+        "View the status and history of all complaints you have lodged so far.",
+      cta: "View Complaints",
+      ctaClass: "bg-purple-50",
+      cardClass: "bg-white",
+      path: "/home/my-complaints",
     },
   ];
 

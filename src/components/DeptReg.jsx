@@ -1,4 +1,4 @@
-import { Stack, TextField } from "@mui/material";
+import { Box, Toolbar, Typography } from "@mui/material";
 import { StepsIcon } from "@phosphor-icons/react";
 import React from "react";
 import DeptRegForm from "./DeptRegForm";
@@ -6,10 +6,43 @@ import DeptRegForm from "./DeptRegForm";
 const DeptReg = () => {
   return (
     <div className="bg-[#f8f9fa] h-screen">
-      <div className="h-15 bg-white text-left items-center align-middle flex text-2xl px-10 gap-2.5 font-bold border-b border-gray-300">
-        <StepsIcon size={32} color="#6065f0" weight="fill" />
-        NexUrb
-      </div>
+      <Toolbar
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          px: { xs: 2, sm: 4 },
+          py: 2,
+          borderBottom: "1px solid #E4DFEE",
+          backgroundColor: "#FFFFFF",
+        }}
+      >
+        <Box>
+          <Typography
+            sx={{
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontSize: "10px",
+              fontWeight: 600,
+              letterSpacing: "2.5px",
+              color: "#6b46a6",
+              mb: "2px",
+            }}
+          >
+            DEPARTMENT REGISTRY
+          </Typography>
+          <Typography
+            sx={{
+              fontFamily: "'Fraunces', Georgia, serif",
+              fontSize: "26px",
+              fontWeight: 600,
+              color: "#211C2B",
+              lineHeight: 1,
+            }}
+          >
+            Nex<span style={{ color: "#6b46a6" }}>Urb</span>
+          </Typography>
+        </Box>
+      </Toolbar>
       <DeptRegForm />
     </div>
   );

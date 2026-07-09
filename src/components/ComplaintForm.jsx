@@ -1,6 +1,14 @@
 import React from "react";
 import { CheckIcon, StepsIcon } from "@phosphor-icons/react";
-import { Alert, Button, Stack, TextField } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Stack,
+  TextField,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
@@ -45,6 +53,9 @@ export default function ComplaintComponent() {
       return;
     }
 
+    const user = JSON.parse(localStorage.getItem("user"));
+    const user_id = user.user_id;
+
     const formData = new FormData();
     formData.append("name", name);
     formData.append("email", email);
@@ -53,6 +64,7 @@ export default function ComplaintComponent() {
     formData.append("location", location);
     formData.append("description", description);
     formData.append("image", file);
+    formData.append("id", user_id);
 
     try {
       const response = await axios.post(
@@ -91,10 +103,43 @@ export default function ComplaintComponent() {
 
   return (
     <div className=" bg-[#f8f9fa] h-screen w-full">
-      <div className="bg-white flex h-12 py-1.5 text-2xl px-5 border-b border-gray-300 font-bold">
-        <StepsIcon size={34} color="#6065f0" weight="fill" />
-        NexUrb
-      </div>
+      <Toolbar
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          px: { xs: 2, sm: 4 },
+          py: 1,
+          borderBottom: "1px solid #E4DFEE",
+          backgroundColor: "#FFFFFF",
+        }}
+      >
+        <Box>
+          <Typography
+            sx={{
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontSize: "10px",
+              fontWeight: 600,
+              letterSpacing: "2.5px",
+              color: "#6b46a6",
+              mb: "2px",
+            }}
+          >
+            LODGE COMPLAINTS
+          </Typography>
+          <Typography
+            sx={{
+              fontFamily: "'Fraunces', Georgia, serif",
+              fontSize: "26px",
+              fontWeight: 600,
+              color: "#211C2B",
+              lineHeight: 1,
+            }}
+          >
+            Nex<span style={{ color: "#6b46a6" }}>Urb</span>
+          </Typography>
+        </Box>
+      </Toolbar>
       {success && (
         <Alert severity="success">
           Here is a gentle confirmation that your action was successful.

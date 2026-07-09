@@ -1,7 +1,5 @@
 import "../css/project.css";
 import * as React from "react";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import axios from "axios";
 import {
   Button,
@@ -13,11 +11,11 @@ import {
   ToggleButtonGroup,
   Tooltip,
   IconButton,
+  TextField,
 } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import Backdrop from "@mui/material/Backdrop";
-import TextField from "@mui/material/TextField";
 
 /* import all the icons in Free Solid, Free Regular, and Brands styles */
 import { fas } from "@fortawesome/free-solid-svg-icons";
@@ -27,10 +25,9 @@ import { faCirclePlus, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 library.add(fas, far, fab);
 
 import Typography from "@mui/material/Typography";
-import CardActionArea from "@mui/material/CardActionArea";
 import ProjectCard from "./ProjectCard";
 
-// Shared styling for form fields in the Add Project card
+// Shared styling for form fields in the Add/Update Project cards
 const fieldSx = {
   "& .MuiOutlinedInput-root": {
     borderRadius: "10px",
@@ -47,7 +44,7 @@ const fieldSx = {
   },
 };
 
-// Small uppercase section eyebrow used inside the Add Project card
+// Small uppercase section eyebrow used inside the Add/Update Project cards
 const SectionLabel = ({ children }) => (
   <Typography
     sx={{
@@ -68,6 +65,11 @@ const SectionLabel = ({ children }) => (
 export default function ProjectComponent() {
   const [state, setState] = React.useState("");
   const [city, setCity] = React.useState("");
+  const [dataArr, setDataArr] = React.useState([]);
+  const [statusFilter, setStatusFilter] = React.useState("all");
+  const [permission, setPermission] = React.useState(false);
+
+  // Add Project modal state
   const [open, setOpen] = React.useState(false);
   const [dept, setDept] = React.useState("");
   const [project, setProject] = React.useState("");
@@ -75,22 +77,33 @@ export default function ProjectComponent() {
   const [desc, setDesc] = React.useState("");
   const [addState, setAddState] = React.useState("");
   const [name, setName] = React.useState("");
-  const [dataArr, setDataArr] = React.useState([]);
-  const [permission, setPermission] = React.useState(false);
-  const [statusFilter, setStatusFilter] = React.useState("all");
+
+  // Update Project modal state
+  const [updateOpen, setUpdateOpen] = React.useState(false);
+  const [updateId, setUpdateId] = React.useState(null);
+  const [updateName, setUpdateName] = React.useState("");
+  const [updateType, setUpdateType] = React.useState("");
+  const [updateState, setUpdateState] = React.useState("");
+  const [updateCity, setUpdateCity] = React.useState("");
+  const [updateDesc, setUpdateDesc] = React.useState("");
 
   const handleSubmit = async (e, statusOverride) => {
     e.preventDefault();
+
+    const q = JSON.parse(localStorage.getItem("user"));
+    const id = q.dept_id;
+
     const effectiveStatus =
       statusOverride !== undefined ? statusOverride : statusFilter;
     console.log(state, city, effectiveStatus);
 
     try {
-      const res = await axios.get("http://localhost:5000/project", {
+      const res = await axios.get("http://localhost:5000/deptproject", {
         params: {
           state: state,
           city: city,
           status: effectiveStatus,
+          id: id,
         },
       });
       console.log(res);
@@ -121,37 +134,38 @@ export default function ProjectComponent() {
     );
   };
 
+  // --- Add Project handlers ---
   const handleForm = async () => {
-    console.log(dept, project, location, desc, addState);
+    const q = JSON.parse(localStorage.getItem("user"));
+    const dept1 = q.dept_id;
+
+    try {
+      await axios.post("http://localhost:5000/project", {
+        name: name,
+        type: project,
+        id: dept1,
+        description: desc,
+        state: addState,
+        city: location,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
     setDept("");
     setProject("");
     setLocation("");
     setAddState("");
     setDesc("");
-
-    try {
-      const q = await axios.post("http://localhost:5000/project", {
-        name: name,
-        type: project,
-        dept_name: dept,
-        description: desc,
-        state: addState,
-        city: location,
-      });
-      console.log(q);
-    } catch (error) {
-      console.log(error);
-    }
-
     setOpen(false);
   };
 
   const handleClose = () => {
     setOpen(false);
   };
+
   const handleOpen = () => {
     const user = JSON.parse(localStorage.getItem("user"));
-    console.log(user.role);
     if (user.role === "Project Manager") {
       setOpen(true);
     } else {
@@ -161,6 +175,53 @@ export default function ProjectComponent() {
       }, 2000);
     }
   };
+
+  // --- Update Project handlers ---
+  const handleOpenUpdate = (projectData) => {
+    setUpdateId(projectData.project_id);
+    setUpdateName(projectData.Name || "");
+    setUpdateType(projectData.type || "");
+    setUpdateState(projectData.state || "");
+    setUpdateCity(projectData.city || "");
+    setUpdateDesc(projectData.description || "");
+    setUpdateOpen(true);
+  };
+
+  const handleCloseUpdate = () => {
+    setUpdateOpen(false);
+  };
+
+  const handleUpdateSubmit = async () => {
+    try {
+      await axios.patch(`http://localhost:5000/project/${updateId}`, {
+        name: updateName,
+        type: updateType,
+        state: updateState,
+        city: updateCity,
+        description: updateDesc,
+      });
+
+      setDataArr((prev) =>
+        prev.map((p) =>
+          p.project_id === updateId
+            ? {
+                ...p,
+                Name: updateName,
+                type: updateType,
+                state: updateState,
+                city: updateCity,
+                description: updateDesc,
+              }
+            : p,
+        ),
+      );
+    } catch (error) {
+      console.log(error);
+    }
+
+    setUpdateOpen(false);
+  };
+
   return (
     <div>
       <Toolbar
@@ -233,6 +294,7 @@ export default function ProjectComponent() {
           </IconButton>
         </Tooltip>
       </Toolbar>
+
       <div className="flex justify-center mt-2.5">
         {permission && (
           <Alert severity="warning">Not Suitable Permission</Alert>
@@ -332,194 +394,351 @@ export default function ProjectComponent() {
                 key={elem.project_id}
                 data={elem}
                 onStatusChange={handleStatusChange}
+                onUpdate={handleOpenUpdate}
               />
             );
           })}
         </Box>
 
-        {
-          <Backdrop
-            sx={(theme) => ({
-              color: "black",
-              zIndex: theme.zIndex.drawer + 1,
-              backgroundColor: "rgba(33, 28, 43, 0.55)",
-              backdropFilter: "blur(3px)",
-            })}
-            open={open}
+        {/* Add Project modal */}
+        <Backdrop
+          sx={(theme) => ({
+            color: "black",
+            zIndex: theme.zIndex.drawer + 1,
+            backgroundColor: "rgba(33, 28, 43, 0.55)",
+            backdropFilter: "blur(3px)",
+          })}
+          open={open}
+        >
+          <Box
+            sx={{
+              width: 480,
+              maxWidth: "92vw",
+              maxHeight: "88vh",
+              overflowY: "auto",
+              borderRadius: "20px",
+              backgroundColor: "#FFFFFF",
+              backgroundImage: `
+                linear-gradient(rgba(107,70,166,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(107,70,166,0.05) 1px, transparent 1px)
+              `,
+              backgroundSize: "22px 22px",
+              boxShadow:
+                "0 24px 60px -16px rgba(33,28,43,0.45), 0 0 0 1px rgba(228,223,238,1)",
+              p: { xs: 3, sm: 4.5 },
+              fontFamily: "'IBM Plex Sans', 'Segoe UI', sans-serif",
+            }}
           >
+            {/* Header */}
             <Box
+              display="flex"
+              alignItems="flex-start"
+              justifyContent="space-between"
+              mb={2}
+            >
+              <Box textAlign="left">
+                <Typography
+                  sx={{
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    letterSpacing: "2.5px",
+                    color: "#6b46a6",
+                    mb: 0.5,
+                  }}
+                >
+                  PROJECT INTAKE FORM
+                </Typography>
+                <Typography
+                  sx={{
+                    fontFamily: "'Fraunces', Georgia, serif",
+                    fontSize: "28px",
+                    fontWeight: 600,
+                    color: "#211C2B",
+                    lineHeight: 1.15,
+                  }}
+                >
+                  Add New Project
+                </Typography>
+              </Box>
+              <FontAwesomeIcon
+                icon={faCircleXmark}
+                size="lg"
+                className="xMark"
+                onClick={handleClose}
+                style={{
+                  cursor: "pointer",
+                  color: "#B7ADC9",
+                  marginTop: "4px",
+                  transition: "color 0.15s ease",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#6b46a6")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#B7ADC9")}
+              />
+            </Box>
+
+            {/* double rule under header */}
+            <Box mb={3}>
+              <Box
+                sx={{ height: "2px", backgroundColor: "#211C2B", mb: "3px" }}
+              />
+              <Box sx={{ height: "1px", backgroundColor: "#E4DFEE" }} />
+            </Box>
+
+            <SectionLabel>Project Identity</SectionLabel>
+            <Stack gap={2} mb={3}>
+              <TextField
+                label="Project Name"
+                variant="outlined"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                fullWidth
+                sx={fieldSx}
+              />
+              <Box display="flex" gap={2}>
+                <TextField
+                  label="Project Type"
+                  variant="outlined"
+                  value={project}
+                  onChange={(e) => setProject(e.target.value)}
+                  required
+                  fullWidth
+                  sx={fieldSx}
+                />
+              </Box>
+            </Stack>
+
+            <SectionLabel>Location &amp; Scope</SectionLabel>
+            <Stack gap={2} mb={3.5}>
+              <Box display="flex" gap={2}>
+                <TextField
+                  label="State"
+                  variant="outlined"
+                  value={addState}
+                  onChange={(e) => setAddState(e.target.value)}
+                  required
+                  fullWidth
+                  sx={fieldSx}
+                />
+                <TextField
+                  label="City"
+                  variant="outlined"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  required
+                  fullWidth
+                  sx={fieldSx}
+                />
+              </Box>
+              <TextField
+                label="Project Description"
+                multiline
+                minRows={3}
+                maxRows={5}
+                variant="outlined"
+                value={desc}
+                onChange={(e) => setDesc(e.target.value)}
+                required
+                fullWidth
+                sx={fieldSx}
+              />
+            </Stack>
+
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={handleForm}
               sx={{
-                width: 480,
-                maxWidth: "92vw",
-                maxHeight: "88vh",
-                overflowY: "auto",
-                borderRadius: "20px",
-                backgroundColor: "#FFFFFF",
-                backgroundImage: `
-                  linear-gradient(rgba(107,70,166,0.05) 1px, transparent 1px),
-                  linear-gradient(90deg, rgba(107,70,166,0.05) 1px, transparent 1px)
-                `,
-                backgroundSize: "22px 22px",
-                boxShadow:
-                  "0 24px 60px -16px rgba(33,28,43,0.45), 0 0 0 1px rgba(228,223,238,1)",
-                p: { xs: 3, sm: 4.5 },
-                fontFamily: "'IBM Plex Sans', 'Segoe UI', sans-serif",
+                backgroundColor: "#6b46a6",
+                color: "#fff",
+                textTransform: "none",
+                fontFamily: "'IBM Plex Sans', sans-serif",
+                fontWeight: 600,
+                fontSize: "15px",
+                py: 1.4,
+                borderRadius: "10px",
+                boxShadow: "none",
+                "&:hover": {
+                  backgroundColor: "#553c8f",
+                  boxShadow: "0 8px 20px -8px rgba(107,70,166,0.6)",
+                },
               }}
             >
-              {/* Header */}
-              <Box
-                display="flex"
-                alignItems="flex-start"
-                justifyContent="space-between"
-                mb={2}
-              >
-                <Box textAlign="left">
-                  <Typography
-                    sx={{
-                      fontFamily: "'IBM Plex Mono', monospace",
-                      fontSize: "11px",
-                      fontWeight: 600,
-                      letterSpacing: "2.5px",
-                      color: "#6b46a6",
-                      mb: 0.5,
-                    }}
-                  >
-                    PROJECT INTAKE FORM
-                  </Typography>
-                  <Typography
-                    sx={{
-                      fontFamily: "'Fraunces', Georgia, serif",
-                      fontSize: "28px",
-                      fontWeight: 600,
-                      color: "#211C2B",
-                      lineHeight: 1.15,
-                    }}
-                  >
-                    Add New Project
-                  </Typography>
-                </Box>
-                <FontAwesomeIcon
-                  icon={faCircleXmark}
-                  size="lg"
-                  className="xMark"
-                  onClick={handleClose}
-                  style={{
-                    cursor: "pointer",
-                    color: "#B7ADC9",
-                    marginTop: "4px",
-                    transition: "color 0.15s ease",
+              File Project
+            </Button>
+          </Box>
+        </Backdrop>
+
+        {/* Update Project modal */}
+        <Backdrop
+          sx={(theme) => ({
+            color: "black",
+            zIndex: theme.zIndex.drawer + 1,
+            backgroundColor: "rgba(33, 28, 43, 0.55)",
+            backdropFilter: "blur(3px)",
+          })}
+          open={updateOpen}
+        >
+          <Box
+            sx={{
+              width: 480,
+              maxWidth: "92vw",
+              maxHeight: "88vh",
+              overflowY: "auto",
+              borderRadius: "20px",
+              backgroundColor: "#FFFFFF",
+              backgroundImage: `
+                linear-gradient(rgba(107,70,166,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(107,70,166,0.05) 1px, transparent 1px)
+              `,
+              backgroundSize: "22px 22px",
+              boxShadow:
+                "0 24px 60px -16px rgba(33,28,43,0.45), 0 0 0 1px rgba(228,223,238,1)",
+              p: { xs: 3, sm: 4.5 },
+              fontFamily: "'IBM Plex Sans', 'Segoe UI', sans-serif",
+            }}
+          >
+            {/* Header */}
+            <Box
+              display="flex"
+              alignItems="flex-start"
+              justifyContent="space-between"
+              mb={2}
+            >
+              <Box textAlign="left">
+                <Typography
+                  sx={{
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    letterSpacing: "2.5px",
+                    color: "#6b46a6",
+                    mb: 0.5,
                   }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.color = "#6b46a6")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.color = "#B7ADC9")
-                  }
-                />
+                >
+                  PROJECT UPDATE FORM
+                </Typography>
+                <Typography
+                  sx={{
+                    fontFamily: "'Fraunces', Georgia, serif",
+                    fontSize: "28px",
+                    fontWeight: 600,
+                    color: "#211C2B",
+                    lineHeight: 1.15,
+                  }}
+                >
+                  Update Project
+                </Typography>
               </Box>
-
-              {/* double rule under header */}
-              <Box mb={3}>
-                <Box
-                  sx={{ height: "2px", backgroundColor: "#211C2B", mb: "3px" }}
-                />
-                <Box sx={{ height: "1px", backgroundColor: "#E4DFEE" }} />
-              </Box>
-
-              <SectionLabel>Project Identity</SectionLabel>
-              <Stack gap={2} mb={3}>
-                <TextField
-                  label="Project Name"
-                  variant="outlined"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  fullWidth
-                  sx={fieldSx}
-                />
-                <Box display="flex" gap={2}>
-                  <TextField
-                    label="Department"
-                    variant="outlined"
-                    value={dept}
-                    onChange={(e) => setDept(e.target.value)}
-                    required
-                    fullWidth
-                    sx={fieldSx}
-                  />
-                  <TextField
-                    label="Project Type"
-                    variant="outlined"
-                    value={project}
-                    onChange={(e) => setProject(e.target.value)}
-                    required
-                    fullWidth
-                    sx={fieldSx}
-                  />
-                </Box>
-              </Stack>
-
-              <SectionLabel>Location &amp; Scope</SectionLabel>
-              <Stack gap={2} mb={3.5}>
-                <Box display="flex" gap={2}>
-                  <TextField
-                    label="State"
-                    variant="outlined"
-                    value={addState}
-                    onChange={(e) => setAddState(e.target.value)}
-                    required
-                    fullWidth
-                    sx={fieldSx}
-                  />
-                  <TextField
-                    label="City"
-                    variant="outlined"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    required
-                    fullWidth
-                    sx={fieldSx}
-                  />
-                </Box>
-                <TextField
-                  label="Project Description"
-                  multiline
-                  minRows={3}
-                  maxRows={5}
-                  variant="outlined"
-                  value={desc}
-                  onChange={(e) => setDesc(e.target.value)}
-                  required
-                  fullWidth
-                  sx={fieldSx}
-                />
-              </Stack>
-
-              <Button
-                variant="contained"
-                fullWidth
-                onClick={handleForm}
-                sx={{
-                  backgroundColor: "#6b46a6",
-                  color: "#fff",
-                  textTransform: "none",
-                  fontFamily: "'IBM Plex Sans', sans-serif",
-                  fontWeight: 600,
-                  fontSize: "15px",
-                  py: 1.4,
-                  borderRadius: "10px",
-                  boxShadow: "none",
-                  "&:hover": {
-                    backgroundColor: "#553c8f",
-                    boxShadow: "0 8px 20px -8px rgba(107,70,166,0.6)",
-                  },
+              <FontAwesomeIcon
+                icon={faCircleXmark}
+                size="lg"
+                className="xMark"
+                onClick={handleCloseUpdate}
+                style={{
+                  cursor: "pointer",
+                  color: "#B7ADC9",
+                  marginTop: "4px",
+                  transition: "color 0.15s ease",
                 }}
-              >
-                File Project
-              </Button>
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#6b46a6")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#B7ADC9")}
+              />
             </Box>
-          </Backdrop>
-        }
+
+            {/* double rule under header */}
+            <Box mb={3}>
+              <Box
+                sx={{ height: "2px", backgroundColor: "#211C2B", mb: "3px" }}
+              />
+              <Box sx={{ height: "1px", backgroundColor: "#E4DFEE" }} />
+            </Box>
+
+            <SectionLabel>Project Identity</SectionLabel>
+            <Stack gap={2} mb={3}>
+              <TextField
+                label="Project Name"
+                variant="outlined"
+                value={updateName}
+                onChange={(e) => setUpdateName(e.target.value)}
+                required
+                fullWidth
+                sx={fieldSx}
+              />
+              <Box display="flex" gap={2}>
+                <TextField
+                  label="Project Type"
+                  variant="outlined"
+                  value={updateType}
+                  onChange={(e) => setUpdateType(e.target.value)}
+                  required
+                  fullWidth
+                  sx={fieldSx}
+                />
+              </Box>
+            </Stack>
+
+            <SectionLabel>Location &amp; Scope</SectionLabel>
+            <Stack gap={2} mb={3.5}>
+              <Box display="flex" gap={2}>
+                <TextField
+                  label="State"
+                  variant="outlined"
+                  value={updateState}
+                  onChange={(e) => setUpdateState(e.target.value)}
+                  required
+                  fullWidth
+                  sx={fieldSx}
+                />
+                <TextField
+                  label="City"
+                  variant="outlined"
+                  value={updateCity}
+                  onChange={(e) => setUpdateCity(e.target.value)}
+                  required
+                  fullWidth
+                  sx={fieldSx}
+                />
+              </Box>
+              <TextField
+                label="Project Description"
+                multiline
+                minRows={3}
+                maxRows={5}
+                variant="outlined"
+                value={updateDesc}
+                onChange={(e) => setUpdateDesc(e.target.value)}
+                required
+                fullWidth
+                sx={fieldSx}
+              />
+            </Stack>
+
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={handleUpdateSubmit}
+              sx={{
+                backgroundColor: "#6b46a6",
+                color: "#fff",
+                textTransform: "none",
+                fontFamily: "'IBM Plex Sans', sans-serif",
+                fontWeight: 600,
+                fontSize: "15px",
+                py: 1.4,
+                borderRadius: "10px",
+                boxShadow: "none",
+                "&:hover": {
+                  backgroundColor: "#553c8f",
+                  boxShadow: "0 8px 20px -8px rgba(107,70,166,0.6)",
+                },
+              }}
+            >
+              Save Changes
+            </Button>
+          </Box>
+        </Backdrop>
       </div>
     </div>
   );

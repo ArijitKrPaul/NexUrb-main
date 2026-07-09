@@ -18,6 +18,9 @@ import UsersComponent from "./components/AddUsers.jsx";
 import AddUSerComponent from "./components/addNewUser.jsx";
 import ProtectedRoute from "./components/protectedRoute.jsx";
 import SupportPageComponenet from "./components/SupportPage.jsx";
+import GeneralDepartmentsPage from "./components/userContacts.jsx";
+import MyComplaints from "./components/publicComplaintsView.jsx";
+import AllProjectComponent from "./components/AllProject.jsx";
 
 function App() {
   const router = createBrowserRouter([
@@ -53,7 +56,7 @@ function App() {
       path: "/home/contacts",
       element: (
         <ProtectedRoute>
-          <DepartmentsPage />
+          <GeneralDepartmentsPage />
         </ProtectedRoute>
       ),
     },
@@ -133,7 +136,7 @@ function App() {
       path: "/admin/project",
       element: (
         <ProtectedRoute>
-          <ProjectComponent />
+          <AllProjectComponent />
         </ProtectedRoute>
       ),
     },
@@ -158,6 +161,22 @@ function App() {
       element: (
         <ProtectedRoute>
           <DepartmentsPage />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/home/my-complaints",
+      element: (
+        <ProtectedRoute>
+          <MyComplaints />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/home/allproject",
+      element: (
+        <ProtectedRoute>
+          <AllProjectComponent />
         </ProtectedRoute>
       ),
     },
